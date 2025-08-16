@@ -1,30 +1,43 @@
-import { productsData } from "../data";
-import { Link } from "react-router-dom";
 
-console.log(productsData);
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import useProductContext from "../contexts/ProductContext";
+
 
 export default function Products() {
+
+    const {productsData, handleAddRemoveProductInCart} = useProductContext();
+     
     return (
         <>
             <main className="container py-4">
+                
                 <h1>Showing All Products</h1>
                 <div className="row">
-                    {productsData?.map((productData) => (
+                    {productsData?.map((product) => (
 
-                    <div key={productData._id} className="col-md-4 my-3">
-                        <Link to={`/products/${productData._id}`} className="text-decoration-none">
+                    <div key={product._id} className="col-md-3 my-3">
+                        
                             <div className="card">
+                                <Link to={`/products/${product._id}`} className="text-decoration-none text-black">
                                 <img 
-                                    src={productData.productImageUrl} 
-                                    alt={productData.productImageAlt} 
-                                    className="img-fluid" 
+                                    src={`${product.imageUrl}?&w=400&h=400&fit=crop`}
+                                    alt={product.imageAlt} 
+                                    className="img-fluid"
                                 />
                                 <div className="card-body text-center">
-                                    <h5>{productData.productName}</h5>
-                                    <p className="fw-bold"> &#8377;{productData.productPrice}</p>
+                                    <h6>{product.name}</h6>
+                                    <p className="fw-bold"> &#8377;{product.price}</p>
                                 </div>
+                                </Link>
+                                <Link 
+                                    to={`${product.isAddedToCart ? "/cart" : "" }`}
+                                    onClick={() => handleAddRemoveProductInCart(product._id, true)} 
+                                    className="p-2 bg-secondary border text-light text-center text-decoration-none">
+                                   {product.isAddedToCart ? "Go To Cart" : "Add To Cart"}
+                                </Link>
                             </div>
-                        </Link>
+                        
                     </div>
 
                     ))}
