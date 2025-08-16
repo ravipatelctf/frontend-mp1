@@ -3,7 +3,7 @@ import useProductContext from "../contexts/ProductContext";
 
 export default function ProductCart() {
 
-    const {productsData, handleAddRemoveProductInCart} = useProductContext();
+    const {productsData, handleAddRemoveProductInCart, noOfProductsInCart} = useProductContext();
 
     const discountedPrice = (product) => {
         const value = (product.price) - (product.price * product.discountPercentage * 0.01);
@@ -24,7 +24,7 @@ export default function ProductCart() {
     const savedAmount = totalPrice - totalAmountAfterDiscount;    
     return (
         <main className="container py-4">
-            <h1 className="text-center">MY CART (1)</h1>
+            <h1 className="text-center">MY CART ({noOfProductsInCart})</h1>
             <div className="row gap-2 justify-content-center py-4">
                 <div className="col-md-5">
                     <div>
@@ -73,7 +73,7 @@ export default function ProductCart() {
                         <h6 className="fw-bold">PRICE DETAILS</h6>
                         <hr />
                         <p className="d-flex justify-content-between">
-                            <span>Price (1 item)</span>
+                            <span>Price ( {noOfProductsInCart} {noOfProductsInCart > 1 ? "items" : "item"} )</span>
                             <span>+ &#8377;{totalPrice}</span>
                         </p>
                         <p className="d-flex justify-content-between">
