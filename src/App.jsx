@@ -5,6 +5,7 @@ import Header from "./components.js/Header";
 import Footer from "./components.js/Footer";
 import ProductDetails from "./pages/ProductDetails";
 import ProductCart from "./pages/ProductCart";
+import Wishlist from "./pages/Wishlist";
 import {ProductProvider} from "./contexts/ProductContext";
 
 
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/products" element={<Products />} />
             <Route path="/products/:productId" element={<ProductDetails />} />
             <Route path="/cart" element={<ProductCart />} />
+            <Route path="/wishlist" element={<Wishlist />} />
         </Routes>
         <Footer />
     </Router>

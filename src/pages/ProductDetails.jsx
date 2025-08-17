@@ -22,7 +22,7 @@ export default function ProductDetails() {
                         src={`${targetProduct.imageUrl}?&w=400&h=400&fit=crop`} 
                         alt={targetProduct.imageAlt} 
                         className="img-fluid" 
-                        />
+                    />
                 </div>
                 <div>
                     <h3>{targetProduct.name}</h3>

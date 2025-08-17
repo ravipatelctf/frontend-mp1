@@ -6,7 +6,7 @@
 
 export async function getData() {
     try {
-        const response = await fetch(`https://backend-mp1.vercel.app/api/products`, {method: "GET"});
+        const response = await fetch(`http://localhost:3000/api/products`, {method: "GET"});
 
         if (!response.ok) {
             console.log("Failed to fetch data")
@@ -20,20 +20,21 @@ export async function getData() {
 export const data = await getData();
 
 // ------------------------------------------------------------------------------------------------
-export async function updateData(productId, isAddedToCartValue) {
+export async function updateData(productId, dataToUpdate) {
     try {
-        const response = await fetch(`https://backend-mp1.vercel.app/api/products/${productId}`, {
+        const response = await fetch(`http://localhost:3000/api/products/${productId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({isAddedToCart: isAddedToCartValue})
+            body: JSON.stringify(dataToUpdate)
         });
 
         if (!response.ok) {
             console.log("Failed to fetch data")
         }
         const {updatedData} = await response.json();
+        // console.log(updatedData)
         return updatedData;
 
         } catch (error) {

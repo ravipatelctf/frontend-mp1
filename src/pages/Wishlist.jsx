@@ -1,13 +1,11 @@
-import { Link } from "react-router-dom";
 import useProductContext from "../contexts/ProductContext";
-
 
 function ProductCard({product}) {
     const {handleAddRemoveProductInCart, handleAddRemoveProductInWishlist} = useProductContext();
+
     return (
             <div key={product._id} className="col-md-3 my-3">       
                 <div className="card">
-                    <Link to={`/products/${product._id}`} className="text-decoration-none text-black">
                         <img 
                             src={`${product.imageUrl}?&w=400&h=400&fit=crop`}
                             alt={product.imageAlt} 
@@ -17,35 +15,35 @@ function ProductCard({product}) {
                             <h6>{product.name}</h6>
                             <p className="fw-bold"> &#8377;{product.price}</p>
                         </div>
-                    </Link>
-                    <Link 
-                        to={`${product.isAddedToWishlist ? "/wishlist" : "" }`}
-                        onClick={() => handleAddRemoveProductInWishlist(product._id, true)} 
+                    <button 
+                        onClick={() => {
+                            handleAddRemoveProductInCart(product._id, true);
+                            handleAddRemoveProductInWishlist(product._id, false);
+                        }} 
+                        className="p-2 bg-primary border text-light text-center text-decoration-none">
+                        Move To Cart
+                    </button>
+                    <button 
+                        onClick={() => handleAddRemoveProductInWishlist(product._id, false)} 
                         className="p-2 bg-secondary border text-light text-center text-decoration-none">
-                        { product.isAddedToWishlist ? "Go To WishList" : "Add To WishList"}
-                    </Link>                    
-                    <Link 
-                        to={`${product.isAddedToCart ? "/cart" : "" }`}
-                        onClick={() => handleAddRemoveProductInCart(product._id, true)} 
-                        className="p-2 bg-secondary border text-light text-center text-decoration-none">
-                        {product.isAddedToCart ? "Go To Cart" : "Add To Cart"}
-                    </Link>
+                        Remove from Wishlist
+                    </button>                    
                 </div>           
             </div>
     );
 }
 
-export default function Products() {
-
+export default function Wishlist() {
     const {productsData} = useProductContext();
     return (
-        <main className="container py-4"> 
-            <h1>Showing All Products</h1>
+        <main className="container">
+            <h1>Wishlist page</h1>
             <div className="row">
-                {productsData?.map((product) => (
+                {productsData?.map((product) => product.isAddedToWishlist && (
                     <ProductCard key={product._id} product={product} />
                 ))}
             </div>
         </main>
+
     );
 }
