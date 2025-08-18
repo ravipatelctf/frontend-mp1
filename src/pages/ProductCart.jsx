@@ -60,7 +60,7 @@ export default function ProductCart() {
     }, 0)
 
     const discountedPrice = (product) => {
-        const value = (product.price * product.quantity) - (product.price * product.quantity * product.discountPercentage * 0.01);
+        const value = (product.price) - (product.price * product.discountPercentage * 0.01);
         return Number((value).toFixed(2));
     }
 
@@ -90,7 +90,7 @@ export default function ProductCart() {
                                         />
                                     </div>
                                     <div className="col-7 p-4">
-                                        <h6>{product.name}</h6>
+                                        <h6>{product.name.slice(0, 28)}</h6>
                                         
                                         <p>
                                             <span className="fs-4 me-2 fw-bold">

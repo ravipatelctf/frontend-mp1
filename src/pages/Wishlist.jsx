@@ -12,7 +12,7 @@ function ProductCard({product}) {
                             className="img-fluid"
                         />
                         <div className="card-body text-center">
-                            <h6>{product.name}</h6>
+                            <h6>{product.name.slice(0, 28)}</h6>
                             <p className="fw-bold"> &#8377;{product.price}</p>
                         </div>
                     <button 
