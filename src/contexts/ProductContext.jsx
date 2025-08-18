@@ -13,9 +13,9 @@ export function ProductProvider({children}) {
 
     const [productsData, setProductsData] = useState(data || []); 
 
-    async function handleAddRemoveProductInCart(productId, isAddedToCartValue) {
+    function handleAddRemoveProductInCart(productId, isAddedToCartValue) {
         
-        await updateData(productId, {isAddedToCart: isAddedToCartValue});
+        updateData(productId, {isAddedToCart: isAddedToCartValue});
 
         const updatedData = (preValues) => {
             return preValues.map((product) => {
@@ -32,9 +32,9 @@ export function ProductProvider({children}) {
         setProductsData((preValues) => updatedData(preValues));   
     }
 
-    async function handleAddRemoveProductInWishlist(productId, isAddedToWishlistValue) {
+    function handleAddRemoveProductInWishlist(productId, isAddedToWishlistValue) {
         
-        await updateData(productId, {isAddedToWishlist: isAddedToWishlistValue});
+        updateData(productId, {isAddedToWishlist: isAddedToWishlistValue});
 
         const updatedData = (preValues) => {
             return preValues.map((product) => {

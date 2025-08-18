@@ -5,6 +5,8 @@ import { useState } from "react";
 
 function ProductCard({product}) {
     const {handleAddRemoveProductInCart, handleAddRemoveProductInWishlist} = useProductContext();
+    const [isInCart, setIsInCart] = useState(false);
+    const [isInWishlist, setIsInWishlist] = useState(false);
     return (
             <div key={product._id} className="col-md-4 my-3">       
                 <div className="card">
@@ -20,16 +22,22 @@ function ProductCard({product}) {
                         </div>
                     </Link>
                     <Link 
-                        to={`${product.isAddedToWishlist ? "/wishlist" : "" }`}
-                        onClick={() => handleAddRemoveProductInWishlist(product._id, true)} 
+                        to={`${isInWishlist ? "/wishlist" : "" }`}
+                        onClick={() => {
+                            setIsInWishlist(true)
+                            handleAddRemoveProductInWishlist(product._id, true)
+                        }} 
                         className="p-2 bg-secondary border text-light text-center text-decoration-none">
-                        { product.isAddedToWishlist ? "Go To WishList" : "Add To WishList"}
+                        { isInWishlist ? "Go To WishList" : "Add To WishList"}
                     </Link>                    
                     <Link 
-                        to={`${product.isAddedToCart ? "/cart" : "" }`}
-                        onClick={() => handleAddRemoveProductInCart(product._id, true)} 
+                        to={`${isInCart ? "/cart" : "" }`}
+                        onClick={() => {
+                            setIsInCart(true)
+                            handleAddRemoveProductInCart(product._id, true)
+                        }} 
                         className="p-2 bg-secondary border text-light text-center text-decoration-none">
-                        {product.isAddedToCart ? "Go To Cart" : "Add To Cart"}
+                        { isInCart ? "Go To Cart" : "Add To Cart" }
                     </Link>
                 </div>           
             </div>
