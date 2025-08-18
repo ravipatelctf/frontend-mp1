@@ -40,12 +40,29 @@ export default function Products() {
 
     const {productsData} = useProductContext();
     const [filteredProducts, setFilteredProducts] = useState(productsData);
+    const [productCategory, setProductCategory] = useState([]);
+    const [productRating, setProductRating] = useState(0);
 
-    function handleRatingFilter(ratingValue) {
-        const rating = parseInt(ratingValue)
-        const productsByRating = productsData.filter((product) => (product.rating >= rating && product.rating < Math.floor(rating + 1)));
-        setFilteredProducts(productsByRating)
+    function handleCategoryFilter(event) {
+        const {checked, value} = event.target;
+        if (checked) {
+            setProductCategory((preValues) => [ ...preValues, value])
+        } else {
+            setProductCategory((preValues) => preValues.filter(pv => pv !== value))
+        }
     }
+    
+    function handleRatingFilter(event) {
+        const ratingValue = parseInt(event.target.value);
+        setProductRating(ratingValue)
+    }
+
+    function handleFilteredProducts() {
+        console.log("productCategory:", productCategory)
+        console.log("productRating:", productRating)
+    }
+
+    handleFilteredProducts();
 
     return (
         <main className="container py-4"> 
@@ -60,25 +77,42 @@ export default function Products() {
                             Clear
                         </span> */}
                     </p>
+                    <div className="mb-4">
+                        <p className="fw-bold">Category</p>
+                        <label htmlFor="category">
+                            <input type="checkbox" name="category" id="category" value="Men" onChange={(event) => handleCategoryFilter(event)} className="me-1" />
+                            Men's clothing
+                        </label>
+                        <br />
+                        <label htmlFor="category">
+                            <input type="checkbox" name="category" id="category" value="Women" onChange={(event) => handleCategoryFilter(event)} className="me-1"  />
+                            Women's clothing
+                        </label>
+                        <br />
+                        <label htmlFor="category">
+                            <input type="checkbox" name="category" id="category" value="Kids" onChange={(event) => handleCategoryFilter(event)} className="me-1" />
+                            Kid's clothing
+                        </label>
+                    </div>
                     <div>
                         <p className="fw-bold">Rating</p>
                         <label htmlFor="rating">
-                        <input type="radio" name="rating" id="rating" className="me-2" value={4} onChange={(event) => handleRatingFilter(event.target.value)} />
+                        <input type="radio" name="rating" id="rating" className="me-1" value={4} onChange={(event) => handleRatingFilter(event)} />
                         4 Stars and above
                         </label>
                         <br />
                         <label htmlFor="rating">
-                        <input type="radio" name="rating" id="rating" className="me-2" value={3} onChange={(event) => handleRatingFilter(event.target.value)}  />
+                        <input type="radio" name="rating" id="rating" className="me-1" value={3} onChange={(event) => handleRatingFilter(event)}  />
                         3 Stars and above
                         </label>
                         <br />
                         <label htmlFor="rating">
-                        <input type="radio" name="rating" id="rating" className="me-2" value={2} onChange={(event) => handleRatingFilter(event.target.value)}  />
+                        <input type="radio" name="rating" id="rating" className="me-1" value={2} onChange={(event) => handleRatingFilter(event)}  />
                         2 Stars and above
                         </label>
                         <br />
                         <label htmlFor="rating">
-                        <input type="radio" name="rating" id="rating" className="me-2" value={1} onChange={(event) => handleRatingFilter(event.target.value)}  />
+                        <input type="radio" name="rating" id="rating" className="me-1" value={1} onChange={(event) => handleRatingFilter(event)}  />
                         1 Stars and above
                         </label>                        
                     </div>
@@ -89,7 +123,7 @@ export default function Products() {
                             <span className="fw-bold fs-5">Showing All Products</span>
                             <span className="ms-2">( showing {filteredProducts.length} products )</span>
                         </p>
-                        {(filteredProducts).map((product) => (
+                        {filteredProducts.map((product) => (
                             <ProductCard key={product._id} product={product} />
                         ))}
                     </div>

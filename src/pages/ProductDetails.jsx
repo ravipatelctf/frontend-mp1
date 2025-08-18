@@ -26,6 +26,7 @@ export default function ProductDetails() {
                 </div>
                 <div>
                     <h3>{targetProduct.name}</h3>
+                    <p>Category: {targetProduct.category}</p>
                     <p>Rating: {targetProduct.rating}</p>
                     <p>
                         <span className="fs-4 me-2 fw-bold">
