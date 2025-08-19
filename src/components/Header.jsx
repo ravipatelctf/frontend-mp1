@@ -22,20 +22,15 @@ export default function Header() {
                     className="px-5 py-2 rounded border"
                     onChange={handleSearch}
                 />
-                <ul className="navbar-nav flex-row gap-2">
+                <ul className="navbar-nav flex-row gap-3">
 
                     <li className="nav-item">
-                        <Link to="/" className={`nav-link ${pathname === "/" ? "active fw-bold" : ""}`}>
-                            Home
-                        </Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link to="/products" className={`nav-link ${pathname === "/products" ? "active fw-bold" : ""}`}>
+                        <Link to="/products" className={`nav-link ${pathname === "/products" ? "active fw-bold border-bottom border-primary border-5" : ""}`}>
                             Products
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/wishlist" className={`nav-link ${pathname === "/wishlist" ? "active fw-bold" : ""}`}>
+                        <Link to="/wishlist" className={`nav-link ${pathname === "/wishlist" ? "active fw-bold border-bottom border-primary border-5" : ""}`}>
                         ♡
                         <sup className="fw-bold text-danger">
                             {noOfProductsInWishlist}
@@ -43,15 +38,15 @@ export default function Header() {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/cart" className={`nav-link ${pathname === "/cart" ? "active fw-bold" : ""}`}>
-                        🛒 Cart
+                        <Link to="/cart" className={`nav-link ${pathname === "/cart" ? "active fw-bold border-bottom border-primary border-5" : ""}`}>
+                        🛒
                         <sup className="fw-bold text-danger">
                             {noOfUniqueProductsInCart}</sup>
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/profile" className={`nav-link ${pathname === "/profile" ? "active fw-bold" : ""}`}>
-                        👤 Profile
+                        <Link to="/profile" className={`nav-link ${pathname === "/profile" ? "active fw-bold border-bottom border-primary border-5" : ""}`}>
+                        👤
                         </Link>
                     </li>
                 </ul>

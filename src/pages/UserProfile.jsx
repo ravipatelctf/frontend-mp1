@@ -76,7 +76,7 @@ export default function UserProfile() {
     
 
     if (!user) {
-        return <p>Loading...</p>
+        return <p className="text-center">Loading...</p>
     }
     return (
         <main className="container py-4">
