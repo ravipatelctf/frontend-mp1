@@ -33,8 +33,8 @@ export default function Cart() {
         return Number((total).toFixed(2));
     }, 0)
 
-    const totalAmountAfterDiscount = totalPrice - totalDiscountedAmount;
-    const totalAmountAfterDiscountPlusDeliveryCharges = totalAmountAfterDiscount + 499;
+    const totalAmountAfterDiscount = Number((totalPrice - totalDiscountedAmount).toFixed(2));
+    const totalAmountAfterDiscountPlusDeliveryCharges = Number((totalAmountAfterDiscount + 499).toFixed(2));
     const savedAmount = Number((totalPrice - totalAmountAfterDiscount).toFixed(2));  
     
     // -------------------------------------------------------------------------------------
