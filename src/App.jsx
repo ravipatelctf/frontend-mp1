@@ -4,9 +4,10 @@ import Products from "./pages/Products";
 import Header from "./components.js/Header";
 import Footer from "./components.js/Footer";
 import ProductDetails from "./pages/ProductDetails";
-import ProductCart from "./pages/ProductCart";
+import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import {ProductProvider} from "./contexts/ProductContext";
+import UserProfile from "./pages/UserProfile";
 
 
 export default function App() {
@@ -19,8 +20,9 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:productId" element={<ProductDetails />} />
-            <Route path="/cart" element={<ProductCart />} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/profile" element={<UserProfile />} />
         </Routes>
         <Footer />
     </Router>

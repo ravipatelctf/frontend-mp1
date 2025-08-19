@@ -9,15 +9,15 @@ export async function getData() {
         const response = await fetch(`https://backend-mp1.vercel.app/api/products`, {method: "GET"});
 
         if (!response.ok) {
-            console.log("Failed to fetch data")
+            throw new Error("Failed to fetch data")
         }
-        const data = await response.json();        
+
+        const data = await response.json();      
         return data;
     } catch (error) {
-        console.log("Failed to fetch data") 
+        throw error;
     } 
 }
-export const data = await getData();
 
 // ------------------------------------------------------------------------------------------------
 export async function updateData(productId, dataToUpdate) {

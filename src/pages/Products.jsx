@@ -1,129 +1,180 @@
 import { Link } from "react-router-dom";
 import useProductContext from "../contexts/ProductContext";
 import { useState } from "react";
+import ProductCard from "../components.js/ProductCard";
 
-
-function ProductCard({product}) {
-    const {handleAddRemoveProductInCart, handleAddRemoveProductInWishlist} = useProductContext();
-    const [isInCart, setIsInCart] = useState(false);
-    const [isInWishlist, setIsInWishlist] = useState(false);
-    return (
-            <div key={product._id} className="col-md-4 my-3">       
-                <div className="card">
-                    <Link to={`/products/${product._id}`} className="text-decoration-none text-black">
-                        <img 
-                            src={`${product.imageUrl}?&w=400&h=400&fit=crop`}
-                            alt={product.imageAlt} 
-                            className="img-fluid"
-                        />
-                        <div className="card-body text-center">
-                            <p>{product.name.slice(0, 28)}</p>
-                            <p className="fw-bold"> &#8377;{product.price}</p>
-                        </div>
-                    </Link>
-                    <Link 
-                        to={`${isInWishlist ? "/wishlist" : "" }`}
-                        onClick={() => {
-                            setIsInWishlist(true)
-                            handleAddRemoveProductInWishlist(product._id, true)
-                        }} 
-                        className="p-2 bg-secondary border text-light text-center text-decoration-none">
-                        { isInWishlist ? "Go To WishList" : "Add To WishList"}
-                    </Link>                    
-                    <Link 
-                        to={`${isInCart ? "/cart" : "" }`}
-                        onClick={() => {
-                            setIsInCart(true)
-                            handleAddRemoveProductInCart(product._id, true)
-                        }} 
-                        className="p-2 bg-secondary border text-light text-center text-decoration-none">
-                        { isInCart ? "Go To Cart" : "Add To Cart" }
-                    </Link>
-                </div>           
-            </div>
-    );
-}
+// function ProductCard({product}) {
+//     const {handleAddRemoveProductInCart, handleAddRemoveProductInWishlist} = useProductContext();
+//     const [isInCart, setIsInCart] = useState(false);
+//     const [isInWishlist, setIsInWishlist] = useState(false);
+//     return (
+//             <div key={product._id} className="col-md-4 my-3">       
+//                 <div className="card">
+//                     <Link to={`/products/${product._id}`} className="text-decoration-none text-black">
+//                         <img 
+//                             src={`${product.imageUrl}?&w=400&h=400&fit=crop`}
+//                             alt={product.imageAlt} 
+//                             className="img-fluid"
+//                         />
+//                         <div className="card-body text-center">
+                            
+//                             <p>
+//                                 <span>{product.name.slice(0, 28)}</span>
+//                                 <br />
+//                             <small>Rating: <strong>{product.rating}</strong></small>
+//                             </p>
+                           
+//                             <p className="fw-bold"> &#8377;{product.price}</p>
+//                         </div>
+//                     </Link>
+//                     <Link 
+//                         to={`${isInWishlist ? "/wishlist" : "" }`}
+//                         onClick={() => {
+//                             setIsInWishlist(true)
+//                             handleAddRemoveProductInWishlist(product._id, true)
+//                         }} 
+//                         className="p-2 bg-secondary border text-light text-center text-decoration-none">
+//                         { isInWishlist ? "Go To WishList" : "Add To WishList"}
+//                     </Link>                    
+//                     <Link 
+//                         to={`${isInCart ? "/cart" : "" }`}
+//                         onClick={() => {
+//                             setIsInCart(true)
+//                             handleAddRemoveProductInCart(product._id, true)
+//                         }} 
+//                         className="p-2 bg-primary border text-light text-center text-decoration-none">
+//                         { isInCart ? "Go To Cart" : "Add To Cart" }
+//                     </Link>
+//                 </div>           
+//             </div>
+//     );
+// }
 
 export default function Products() {
 
-    const {productsData} = useProductContext();
-    const [filteredProducts, setFilteredProducts] = useState(productsData);
-    const [productCategory, setProductCategory] = useState([]);
-    const [productRating, setProductRating] = useState(0);
+    const { loading, error, productsData, searchedProducts} = useProductContext();
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [productRating, setProductRating] = useState(null);
+    const [sortBy, setSortBy] = useState(null);
 
-    function handleCategoryFilter(event) {
+    if (loading) {
+        return <p className="text-center">Loading...</p>
+    }
+
+    if (error) {
+        return <p className="text-center">Error occurred...</p>
+    }
+
+    function handleCategory(event) {
         const {checked, value} = event.target;
         if (checked) {
-            setProductCategory((preValues) => [ ...preValues, value])
+            setSelectedCategories((preValues) => [...preValues, value]);
         } else {
-            setProductCategory((preValues) => preValues.filter(pv => pv !== value))
+            setSelectedCategories((preValues) => preValues.filter(pv => pv !== value))
         }
     }
-    
-    function handleRatingFilter(event) {
+
+    function handleRating(event) {
         const ratingValue = parseInt(event.target.value);
         setProductRating(ratingValue)
     }
 
-    function handleFilteredProducts() {
-        console.log("productCategory:", productCategory)
-        console.log("productRating:", productRating)
+    let filteredProducts = productsData.filter((product) => {
+        const categoryCondition = selectedCategories.length === 0 || selectedCategories.includes(product.category); 
+        const ratingCondition = productRating === null || (product.rating >= productRating); ;
+        return categoryCondition && ratingCondition;
+    })
+
+    // applying sort by price
+    if (sortBy === "lowToHigh") {
+        filteredProducts = [...filteredProducts].sort((a, b) => a.price - b.price); // if val1 - val2 => -ve , order reverses
+    } else if (sortBy === "highToLow") {
+        filteredProducts = [...filteredProducts].sort((a, b) => b.price - a.price);
     }
 
-    handleFilteredProducts();
+    function handleClearBtn(event) {
+        event.preventDefault()
+        setSelectedCategories([])
+        setProductRating(null)
+        setSortBy(null)
+    }
 
     return (
         <main className="container py-4"> 
             
             <div className="row">
                 <div className="col-md-3">
+                    <form onSubmit={handleClearBtn}>
                     <p className="d-flex justify-content-between p-1">
                         <span className="fw-bold fs-6">
                             Filters
                         </span>
-                        {/* <span className="fs-6">
+                        <button type="submit" className="fs-6">
                             Clear
-                        </span> */}
+                        </button>
                     </p>
                     <div className="mb-4">
-                        <p className="fw-bold">Category</p>
-                        <label htmlFor="category">
-                            <input type="checkbox" name="category" id="category" value="Men" onChange={(event) => handleCategoryFilter(event)} className="me-1" />
+                        <p className="fw-bold mb-2">Category</p>
+                        <label htmlFor="Men">
+                            <input type="checkbox" checked={selectedCategories.includes("Men") ? true : false} name="Men" id="Men" value="Men" className="me-1" onChange={(event) => handleCategory(event)} />
                             Men's clothing
                         </label>
                         <br />
-                        <label htmlFor="category">
-                            <input type="checkbox" name="category" id="category" value="Women" onChange={(event) => handleCategoryFilter(event)} className="me-1"  />
+                        <label htmlFor="Men">
+                            <input type="checkbox" checked={selectedCategories.includes("Women") ? true : false} name="Men" id="Men" value="Women" className="me-1" onChange={(event) => handleCategory(event)} />
                             Women's clothing
                         </label>
                         <br />
-                        <label htmlFor="category">
-                            <input type="checkbox" name="category" id="category" value="Kids" onChange={(event) => handleCategoryFilter(event)} className="me-1" />
-                            Kid's clothing
+                        <label htmlFor="Men">
+                            <input type="checkbox" checked={selectedCategories.includes("Kids") ? true : false} name="Men" id="Men" value="Kids" className="me-1" onChange={(event) => handleCategory(event)} />
+                            Kids' clothing
                         </label>
                     </div>
-                    <div>
-                        <p className="fw-bold">Rating</p>
-                        <label htmlFor="rating">
-                        <input type="radio" name="rating" id="rating" className="me-1" value={4} onChange={(event) => handleRatingFilter(event)} />
-                        4 Stars and above
-                        </label>
-                        <br />
-                        <label htmlFor="rating">
-                        <input type="radio" name="rating" id="rating" className="me-1" value={3} onChange={(event) => handleRatingFilter(event)}  />
-                        3 Stars and above
-                        </label>
-                        <br />
-                        <label htmlFor="rating">
-                        <input type="radio" name="rating" id="rating" className="me-1" value={2} onChange={(event) => handleRatingFilter(event)}  />
-                        2 Stars and above
-                        </label>
-                        <br />
-                        <label htmlFor="rating">
-                        <input type="radio" name="rating" id="rating" className="me-1" value={1} onChange={(event) => handleRatingFilter(event)}  />
-                        1 Stars and above
-                        </label>                        
+                    <div  className="mb-4">
+                        <label htmlFor="rating" className="form-label fw-bold">Rating</label>
+                        <input
+                            type="range"
+                            id="rating"
+                            className="form-range"
+                            min="0"
+                            max="5"
+                            value={productRating ?? 0}
+                            step="1" 
+                            onChange={handleRating}/>
+                    
+                        <div className="d-flex justify-content-between">
+                            {[0,1,2,3,4,5].map(num => <small key={num}>{num}★</small>)}
+                        </div>
                     </div>
+                    <div className="mb-4">
+                        <p className="fw-bold">Sort by</p>
+                        <label htmlFor="lowToHigh">
+                            <input 
+                                type="radio" 
+                                name="sort" 
+                                className="me-1" 
+                                id="lowToHigh"
+                                value="lowToHigh"
+                                checked={sortBy === "lowToHigh"}
+                                onChange={(event) => setSortBy(event.target.value)}
+                            />
+                            Price - Low to High
+                        </label>
+                        <br />
+                        <label htmlFor="highToLow">
+                            <input 
+                                type="radio" 
+                                name="sort" 
+                                className="me-1" 
+                                id="highToLow"
+                                value="highToLow"
+                                checked={sortBy === "highToLow"}
+                                onChange={(event) => setSortBy(event.target.value)}
+                            />
+                            Price - High to Low
+                        </label>
+                    </div>
+                    </form>
                 </div>
                 <div className="col-md-9"> 
                     <div className="row">
@@ -131,7 +182,7 @@ export default function Products() {
                             <span className="fw-bold fs-5">Showing All Products</span>
                             <span className="ms-2">( showing {filteredProducts.length} products )</span>
                         </p>
-                        {filteredProducts.map((product) => (
+                        {(searchedProducts.length > 0 ? searchedProducts : filteredProducts).map((product) => (
                             <ProductCard key={product._id} product={product} />
                         ))}
                     </div>

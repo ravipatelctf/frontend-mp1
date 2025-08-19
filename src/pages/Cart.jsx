@@ -19,6 +19,7 @@ function ProductQuantity({product}) {
             }
         })
         setProductsData(updatedProduct)
+        alert("Product in cart increased by 1.")
     }
 
     function handleDecrementProductQuantity() {
@@ -33,6 +34,7 @@ function ProductQuantity({product}) {
             }
         })
         setProductsData(updatedProduct)
+        alert("Product in cart decreased by 1.")
     }
     return (
         <div>
@@ -50,9 +52,19 @@ function ProductQuantity({product}) {
         </div>
     );
 }
+// ------------------------------------------------------------------------------------------------------------------------------------------------
+export default function Cart() {
+    const {productsData, loading, error, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, searchedProducts} = useProductContext();
+    const [selectedAddress, setSelectedAddress] = useState("");
+    
 
-export default function ProductCart() {
-    const {productsData, handleAddRemoveProductInCart, noOfUniqueProductsInCart} = useProductContext();
+    if (loading) {
+        return <p className="text-center">Loading...</p>
+    }
+
+    if (error) {
+        return <p className="text-center">Error occurred...</p>
+    }
 
     const totalPrice = productsData.reduce((total, curr) => {
         total += curr.isAddedToCart === true ? curr.price * curr.quantity: 0;
@@ -71,14 +83,55 @@ export default function ProductCart() {
 
     const totalAmountAfterDiscount = totalPrice - totalDiscountedAmount;
     const totalAmountAfterDiscountPlusDeliveryCharges = totalAmountAfterDiscount + 499;
-    const savedAmount = Number((totalPrice - totalAmountAfterDiscount).toFixed(2));    
+    const savedAmount = Number((totalPrice - totalAmountAfterDiscount).toFixed(2));  
+    
+    // -------------------------------------------------------------------------------------
+    // place order logic
+    function handlePlaceOrder(event) {
+        event.preventDefault();
+        productsData.map(async (product) => {
+            if(product.isAddedToCart) {
+                await addToOrder({"productId": product._id})
+            }
+        })
+        if (selectedAddress) {
+            alert("Order placed successfully.")
+        } else {
+            alert("Select an address to place order.")
+        }
+        setSelectedAddress("")
+    }
+
+// -----------------------------------------------------------------------------------
+    // API call for updating user address
+    async function addToOrder(dataToUpdate) {
+        try {
+            const response = await fetch(`https://backend-mp1.vercel.app/api/user/orders`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dataToUpdate)
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update user address.");
+            }
+            const updatedUserData = await response.json();
+            return updatedUserData;
+        } catch (error) {
+            throw error;
+        }
+    }
+   
+    // -------------------------------------------------------------------------------------
     return (
         <main className="container py-4">
             <h1 className="text-center">MY CART ({noOfUniqueProductsInCart})</h1>
             <div className="row gap-2 justify-content-center py-4">
                 <div className="col-md-5">
                     <div>
-                        {productsData?.map((product) => product.isAddedToCart && (
+                        {(searchedProducts.length > 0 ? searchedProducts : productsData).map((product) => (product.isAddedToCart && !product.isAddedToWishlist) && (
                             <div key={product._id} className="card mb-5">
 
                                 <div className="row">
@@ -108,8 +161,13 @@ export default function ProductCart() {
                                         
                                         <button 
                                             onClick={() => handleAddRemoveProductInCart(product._id, false)} 
-                                            className="p-2 bg-secondary border text-light text-center text-decoration-none">
+                                            className="p-2 btn btn-danger px-4 mb-1">
                                             Remove From Cart
+                                        </button>
+                                        <button 
+                                            onClick={() => handleAddRemoveProductInWishlist(product._id, true)}
+                                            className="p-2 btn btn-secondary px-4">
+                                            Move To Wishlist
                                         </button>
                                     </div>
                                 </div>
@@ -142,10 +200,26 @@ export default function ProductCart() {
                         </p>
                         <hr />
                         <p>You will save &#8377;{savedAmount} on this order </p>
-                        <button  
-                            className="p-2 bg-primary border text-light text-center text-decoration-none">
-                            PLACE ORDER
-                        </button>
+
+                        <form onSubmit={(event) => handlePlaceOrder(event)}>
+                            <select 
+                                onChange={(event) => setSelectedAddress(event.target.value)} 
+                                name="address" 
+                                id="address" 
+                                className="form-select fw-bold mb-1"
+                                defaultValue={selectedAddress}
+                            >
+                                <option value="" disabled>Select Address</option>
+                                <option value="Address 1">Address 1</option>
+                                <option value="Address 2">Address 2</option>
+                                <option value="Address 3">Address 3</option>
+                            </select>
+                            <button
+                                type="submit"
+                                className="p-2 bg-primary border text-light text-center text-decoration-none">
+                                PLACE ORDER
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

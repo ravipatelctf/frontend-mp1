@@ -18,13 +18,17 @@ function ProductCard({product}) {
                     <button 
                         onClick={() => {
                             handleAddRemoveProductInCart(product._id, true);
+                            
                             handleAddRemoveProductInWishlist(product._id, false);
                         }} 
                         className="p-2 bg-primary border text-light text-center text-decoration-none">
                         Move To Cart
                     </button>
                     <button 
-                        onClick={() => handleAddRemoveProductInWishlist(product._id, false)} 
+                        onClick={() => {
+                            handleAddRemoveProductInCart(product._id, false);
+                            handleAddRemoveProductInWishlist(product._id, false)
+                        }} 
                         className="p-2 bg-secondary border text-light text-center text-decoration-none">
                         Remove from Wishlist
                     </button>                    
@@ -34,7 +38,15 @@ function ProductCard({product}) {
 }
 
 export default function Wishlist() {
-    const {productsData} = useProductContext();
+    const {productsData, loading, error} = useProductContext();
+
+    if (loading) {
+        return <p className="text-center">Loading...</p>
+    }
+
+    if (error) {
+        return <p className="text-center">Error occurred...</p>
+    }
     return (
         <main className="container">
             <h1>Wishlist page</h1>
