@@ -6,7 +6,6 @@ export default function Header() {
     
     const {noOfUniqueProductsInCart, noOfProductsInWishlist, handleSearch} = useProductContext();
     const {pathname} = useLocation();
-    console.log(pathname);
     return (
         <header className="text-secondary">
             <nav className="nav container px-4 py-2 align-items-center justify-content-between gap-1">

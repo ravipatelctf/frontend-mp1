@@ -4,6 +4,8 @@ import useProductContext from "../contexts/ProductContext";
 import { ProductQuantity } from "../components/ProductQuantity";
 import { ProductSize } from "../components/ProductSize";
 import {updateData} from "../data";
+import { toast } from "react-toastify";
+
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
     const {productsData, loading, error, sizeValue, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, searchedProducts} = useProductContext();
@@ -48,9 +50,9 @@ export default function Cart() {
             }
         })
         if (selectedAddress) {
-            alert("Order placed successfully.")
+            toast.success("Order placed successfully.")
         } else {
-            alert("Select an address to place order.")
+            toast.warn("Select an address to place order.")
         }
         setSelectedAddress("")
     }
@@ -115,12 +117,18 @@ export default function Cart() {
                                         <ProductSize />
                                         
                                         <button 
-                                            onClick={() => handleAddRemoveProductInCart(product._id, false)} 
+                                            onClick={() => {
+                                                toast.success("Product removed from cart successfully.")
+                                                handleAddRemoveProductInCart(product._id, false)
+                                            }} 
                                             className="w-100 p-2 btn btn-danger px-4 mb-1">
                                             Remove From Cart
                                         </button>
                                         <button 
-                                            onClick={() => handleAddRemoveProductInWishlist(product._id, true)}
+                                            onClick={() => {
+                                                toast.success("Product moved to wishlist successfully.")
+                                                handleAddRemoveProductInWishlist(product._id, true)
+                                            }}
                                             className="w-100 p-2 btn btn-secondary px-4">
                                             Move To Wishlist
                                         </button>

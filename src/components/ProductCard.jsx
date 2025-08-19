@@ -1,14 +1,14 @@
 import useProductContext from "../contexts/ProductContext";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-
+import { toast } from "react-toastify";
 
 export default function ProductCard({product}) {   
     return (
         <div className="col-md-4 my-3">       
             <div className="card">
                 <CardContent product={product} />
-                <ButtonWishlist product={product} />                    
+                <ButtonWishlist product={product} />                   
                 <ButtonCart product={product} />
             </div>           
         </div>
@@ -54,6 +54,7 @@ function ButtonWishlist({product}) {
         <button
             onClick={() => {
                 setIsInWishlist(true)
+                toast.success("Product added to wishlist successfully.")
                 handleAddRemoveProductInWishlist(product._id, true)
             }} 
             className="p-2 bg-secondary border text-light text-center text-decoration-none">
@@ -75,7 +76,7 @@ function ButtonCart({product}) {
         <button 
             onClick={() => {
                 setIsInCart(true)
-                
+                toast.success("Product added to cart successfully.")
                 handleAddRemoveProductInCart(product._id, true)
             }} 
             className="p-2 bg-primary border text-light text-center text-decoration-none">

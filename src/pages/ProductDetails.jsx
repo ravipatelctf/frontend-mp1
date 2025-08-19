@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import useProductContext from "../contexts/ProductContext";
 import {ProductQuantity} from "../components/ProductQuantity";
 import {ProductSize} from "../components/ProductSize";
+import { toast } from "react-toastify";
 
 function ButtonWishlist({product}) {
     const {handleAddRemoveProductInWishlist} = useProductContext();
@@ -12,6 +13,7 @@ function ButtonWishlist({product}) {
     return !isInWishlist ? (
         <button
             onClick={() => {
+                toast.success("Product added to wishlist successfully.")
                 setIsInWishlist(true)
                 handleAddRemoveProductInWishlist(product._id, true)
             }} 
@@ -33,8 +35,8 @@ function ButtonCart({product}) {
     return !isInCart ? (
         <button 
             onClick={() => {
+                toast.success("Product added to cart successfully.")
                 setIsInCart(true)
-                
                 handleAddRemoveProductInCart(product._id, true)
             }} 
             className="w-100 p-2 btn btn-primary">
@@ -63,7 +65,7 @@ export default function ProductDetails() {
     }
     
     const targetProduct = productsData.find(product => product._id === productId);
-    const discountedPrice =(targetProduct.price)- (targetProduct.price * targetProduct.discountPercentage * 0.01);
+    const discountedPrice = Number(((targetProduct.price)- (targetProduct.price * targetProduct.discountPercentage * 0.01)).toFixed(2));
 
     return (
         <main className="bg-light">

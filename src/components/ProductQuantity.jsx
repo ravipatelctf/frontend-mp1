@@ -1,6 +1,7 @@
 
 import useProductContext from "../contexts/ProductContext";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export function ProductQuantity({product}) {
 
@@ -18,7 +19,6 @@ export function ProductQuantity({product}) {
             }
         })
         setProductsData(updatedProduct)
-        alert("Product in cart increased by 1.")
     }
 
     function handleDecrementProductQuantity() {
@@ -33,7 +33,6 @@ export function ProductQuantity({product}) {
             }
         })
         setProductsData(updatedProduct)
-        alert("Product in cart decreased by 1.")
     }
     return (
         <div>
@@ -41,6 +40,7 @@ export function ProductQuantity({product}) {
                 <span>
                     <button 
                         onClick={() => {
+                            toast.info("Product quantity decreased by 1")
                             setBtnState("-")
                             handleDecrementProductQuantity()
                         }} 
@@ -52,6 +52,7 @@ export function ProductQuantity({product}) {
                 <span>
                     <button 
                         onClick={() => {
+                            toast.info("Product quantity increased by 1")
                             setBtnState("+")
                             handleIncrementProductQuantity()
                         }} 

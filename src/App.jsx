@@ -8,11 +8,13 @@ import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import {ProductProvider} from "./contexts/ProductContext";
 import UserProfile from "./pages/UserProfile";
-
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   
   return (
+    <>
     <ProductProvider >
     <Router>
         <Header />
@@ -26,7 +28,9 @@ export default function App() {
         </Routes>
         <Footer />
     </Router>
-    </ProductProvider >
-  )
+    </ProductProvider>
+    <ToastContainer position="top-left" autoClose={2000} />
+    </>
+  );
 }
 

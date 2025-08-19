@@ -1,4 +1,5 @@
 import useProductContext from "../contexts/ProductContext";
+import { toast } from "react-toastify";
 
 function ProductCard({product}) {
     const {handleAddRemoveProductInCart, handleAddRemoveProductInWishlist} = useProductContext();
@@ -17,8 +18,8 @@ function ProductCard({product}) {
                         </div>
                     <button 
                         onClick={() => {
+                            toast.success("Product removed from cart successfully.")
                             handleAddRemoveProductInCart(product._id, true);
-                            
                             handleAddRemoveProductInWishlist(product._id, false);
                         }} 
                         className="p-2 bg-primary border text-light text-center text-decoration-none">
@@ -26,6 +27,7 @@ function ProductCard({product}) {
                     </button>
                     <button 
                         onClick={() => {
+                            toast.success("Product removed from wishlist successfully.")
                             handleAddRemoveProductInCart(product._id, false);
                             handleAddRemoveProductInWishlist(product._id, false)
                         }} 

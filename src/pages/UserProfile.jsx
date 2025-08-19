@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {toast} from "react-toastify";
 
 export default function UserProfile() {
     const [user, setUser] = useState();
@@ -35,16 +36,16 @@ export default function UserProfile() {
     
     async function handleAddNewAddress(event) {
         event.preventDefault()
+        newAddress ? toast.success("New address added successfully.") : toast.error("Enter an address before submitting.")
         const updatedAddress = [...user.address, newAddress];
-
         const dataToUpdate = {address: updatedAddress};
         const updateduser = await updateUserAddress(dataToUpdate);
 
         if (updateduser) {
+            
             setUser(updateduser);
             setAddress(updateduser.address)
         }
-
         setNewAddress("")
     }
 
@@ -101,7 +102,11 @@ export default function UserProfile() {
 
             
             <div className="mt-2">
-                <button className="btn btn-info" onClick={() => setOrderStatus(!orderStatus)}>
+                <button className="btn btn-info" onClick={() => {
+                    !orderStatus && toast.info("Orders are visible now.")
+                    orderStatus && toast.info("Orders are hidden now.")
+                    setOrderStatus(!orderStatus)
+                }}>
                     {orderStatus ? "Hide Order History" : "See Order History"}
                 </button>
                 

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getData, updateData } from "../data";
-
+import { toast } from "react-toastify";
 
 const ProductContext = createContext();
 const useProductContext = () => useContext(ProductContext);
@@ -13,6 +13,7 @@ export function ProductProvider({children}) {
     const [productsData, setProductsData] = useState([]);
     const [searchedProducts, setSearchedProducts] = useState([]);
     const [sizeValue, setSizeValue] = useState(null);
+
     // ---------------------------------------------------------------------
     // I don't understand this code block especially `useFetch()`
     const [loading, setLoading] = useState(true);
@@ -70,12 +71,6 @@ export function ProductProvider({children}) {
             quantity: isAddedToCartValue ? undefined : 0
         });
         setProductsData((preValues) => updatedData(preValues));
-        
-        if (isAddedToCartValue === true) {
-            alert("Product added to cart successfully.")
-        } else if (isAddedToCartValue === false) {
-            alert("Product removed from cart successfully.")
-        }
     }
 
     function handleAddRemoveProductInWishlist(productId, isAddedToWishlistValue) {
@@ -94,13 +89,9 @@ export function ProductProvider({children}) {
             });
         }
 
-        setProductsData((preValues) => updatedData(preValues));
-        if (isAddedToWishlistValue === true) {
-            alert("Product added to wishlist successfully.")
-        } else if (isAddedToWishlistValue === false) {
-            alert("Product removed from wishlist successfully.")
-        }   
+        setProductsData((preValues) => updatedData(preValues));   
     }
+
 
     const noOfUniqueProductsInCart = productsData.filter(product => (product.isAddedToCart && !product.isAddedToWishlist)).length;
     const noOfProductsInWishlist = productsData.filter(product => product.isAddedToWishlist).length;

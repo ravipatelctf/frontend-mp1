@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+
 import useProductContext from "../contexts/ProductContext";
 import { useState } from "react";
 import ProductCard from "../components/ProductCard";
+import { toast } from "react-toastify";
 
 export default function Products() {
 
@@ -46,15 +47,17 @@ export default function Products() {
     }
 
     function handleClearBtn(event) {
-        event.preventDefault()
-        setSelectedCategories([])
-        setProductRating(null)
-        setSortBy(null)
-    }
+        event.preventDefault();
 
+        setSelectedCategories([]);
+        setProductRating(null);
+        setSortBy(null);
+        
+        toast.success("Filters were cleared successfully.");
+    }
+    
     return (
         <main className="container py-4"> 
-            
             <div className="row">
                 <div className="col-md-3">
                     <form onSubmit={handleClearBtn}>
