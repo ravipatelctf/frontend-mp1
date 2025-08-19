@@ -152,8 +152,6 @@ function CardBody({product}) {
         <div className="card-body text-center">
             <p>
                 <span>{product.name.slice(0, 28)}</span>
-                <br />
-                <small>Rating: <strong>{product.rating}</strong></small>
             </p>
             <p className="fw-bold"> &#8377;{product.price}</p>
         </div>

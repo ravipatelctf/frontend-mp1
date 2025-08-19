@@ -3,6 +3,52 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import useProductContext from "../contexts/ProductContext";
+import {ProductQuantity} from "../components/ProductQuantity";
+import {ProductSize} from "../components/ProductSize";
+
+function ButtonWishlist({product}) {
+    const {handleAddRemoveProductInWishlist} = useProductContext();
+    const [isInWishlist, setIsInWishlist] = useState(false);
+    return !isInWishlist ? (
+        <button
+            onClick={() => {
+                setIsInWishlist(true)
+                handleAddRemoveProductInWishlist(product._id, true)
+            }} 
+            className="w-100 p-2 btn btn-secondary mb-1">
+            Add To WishList
+        </button>
+        ) : (
+        <Link 
+            to="/wishlist"
+            className="w-100 p-2 btn btn-secondary mb-1">
+            Go To WishList
+        </Link>       
+    )
+}
+
+function ButtonCart({product}) {
+    const {handleAddRemoveProductInCart} = useProductContext();
+    const [isInCart, setIsInCart] = useState(false);
+    return !isInCart ? (
+        <button 
+            onClick={() => {
+                setIsInCart(true)
+                
+                handleAddRemoveProductInCart(product._id, true)
+            }} 
+            className="w-100 p-2 btn btn-primary">
+            Add To Cart
+        </button>
+        ) : (
+            <Link 
+                to="/cart"
+                className="w-100 p-2 btn btn-primary">
+                Go To Cart
+            </Link>
+        );
+}
+
 
 export default function ProductDetails() {
     const {productId} = useParams();
@@ -15,9 +61,6 @@ export default function ProductDetails() {
     if (error) {
         return <p className="text-center">Error occurred...</p>
     }
-
-    const [isInCart, setIsInCart] = useState(false);
-    const [isInWishlist, setIsInWishlist] = useState(false);
     
     const targetProduct = productsData.find(product => product._id === productId);
     const discountedPrice =(targetProduct.price)- (targetProduct.price * targetProduct.discountPercentage * 0.01);
@@ -26,35 +69,16 @@ export default function ProductDetails() {
         <main className="bg-light">
             <div className="container py-4">
             <div className="row border p-2 bg-white">
-                <div className="col-md-4">
+                <div className="col-md-4 mb-4">
                     <img 
                         src={`${targetProduct.imageUrl}?&w=400&h=400&fit=crop`} 
                         alt={targetProduct.imageAlt} 
-                        className="img-fluid mb-2" 
+                        className="img-fluid mb-1" 
                     />
-                    <div className="mb-2 text-center"> 
-                    <Link 
-                        type="button"
-                        to={`${isInWishlist ? "/wishlist" : "" }`}
-                        onClick={() => {
-                            setIsInWishlist(true)
-                            handleAddRemoveProductInWishlist(targetProduct._id, true)
-                        }} 
-                        className="btn btn-secondary me-2 px-4">
-                        { isInWishlist ? "Go To WishList" : "Add To WishList"}
-                    </Link>      
-                    <Link 
-                        type="button"
-                        to={`${isInCart ? "/cart" : "" }`}
-                        onClick={() => {
-                            setIsInCart(true)
-                            setProductsInCart((preValues) => [...preValues, targetProduct._id])
-                            handleAddRemoveProductInCart(targetProduct._id, true)
-                        }} 
-                        className="btn btn-primary px-4">
-                        { isInCart ? "Go To Cart" : "Add To Cart" }
-                    </Link>
-                    </div>
+                    
+                    <ButtonWishlist product={targetProduct} />
+                    <ButtonCart product={targetProduct} /> 
+                    
                 </div>
                 <div className="col-md-8">
                     <h3>{targetProduct.name}</h3>
@@ -72,8 +96,9 @@ export default function ProductDetails() {
                             {targetProduct.discountPercentage}% off
                         </small> 
                     </p>
-                    <p><strong>Quantity: </strong>{targetProduct.quantity}</p>
-                    <p><strong>Size: </strong>{targetProduct.size}</p>
+                    
+                    <ProductQuantity product={targetProduct} />
+                    <ProductSize />
                     <p className="fw-bold">Description</p>
                     <ul>
                         <li>{targetProduct.description}</li>

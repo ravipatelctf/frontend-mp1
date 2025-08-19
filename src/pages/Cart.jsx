@@ -1,60 +1,12 @@
 
 import { useState } from "react";
 import useProductContext from "../contexts/ProductContext";    
-
-
-function ProductQuantity({product}) {
-
-    const {productsData, setProductsData} = useProductContext();
-
-    function handleIncrementProductQuantity() {
-
-        const updatedProduct = productsData.map((curr) => {
-            if (curr._id != product._id) {
-                return curr;
-            }
-            return {
-                ...curr,
-                quantity: product.quantity + 1
-            }
-        })
-        setProductsData(updatedProduct)
-        alert("Product in cart increased by 1.")
-    }
-
-    function handleDecrementProductQuantity() {
-
-        const updatedProduct = productsData.map((curr) => {
-            if (curr._id != product._id) {
-                return curr;
-            }
-            return {
-                ...curr,
-                quantity: product.quantity - 1
-            }
-        })
-        setProductsData(updatedProduct)
-        alert("Product in cart decreased by 1.")
-    }
-    return (
-        <div>
-            <p><strong>Quantity: </strong>        
-                <span>
-                    <button onClick={() => handleDecrementProductQuantity()} className="px-2">-</button>
-                </span>
-                <span className="p-2">
-                    {product.quantity}
-                </span>
-                <span>
-                    <button onClick={() => handleIncrementProductQuantity()} className="px-2">+</button>
-                </span>                          
-            </p> 
-        </div>
-    );
-}
+import { ProductQuantity } from "../components/ProductQuantity";
+import { ProductSize } from "../components/ProductSize";
+import {updateData} from "../data";
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
-    const {productsData, loading, error, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, searchedProducts} = useProductContext();
+    const {productsData, loading, error, sizeValue, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, searchedProducts} = useProductContext();
     const [selectedAddress, setSelectedAddress] = useState("");
     
 
@@ -91,7 +43,8 @@ export default function Cart() {
         event.preventDefault();
         productsData.map(async (product) => {
             if(product.isAddedToCart) {
-                await addToOrder({"productId": product._id})
+                await addToOrder({"productId": product._id});
+                await updateData(product._id, {"size": sizeValue});
             }
         })
         if (selectedAddress) {
@@ -102,7 +55,7 @@ export default function Cart() {
         setSelectedAddress("")
     }
 
-// -----------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
     // API call for updating user address
     async function addToOrder(dataToUpdate) {
         try {
@@ -128,8 +81,8 @@ export default function Cart() {
     return (
         <main className="container py-4">
             <h1 className="text-center">MY CART ({noOfUniqueProductsInCart})</h1>
-            <div className="row gap-2 justify-content-center py-4">
-                <div className="col-md-5">
+            <div className="row justify-content-between py-4">
+                <div className="col-lg-6 p-2">
                     <div>
                         {(searchedProducts.length > 0 ? searchedProducts : productsData).map((product) => (product.isAddedToCart && !product.isAddedToWishlist) && (
                             <div key={product._id} className="card mb-5">
@@ -159,14 +112,16 @@ export default function Cart() {
                                         </p>
                                         <ProductQuantity product={product} />
                                         
+                                        <ProductSize />
+                                        
                                         <button 
                                             onClick={() => handleAddRemoveProductInCart(product._id, false)} 
-                                            className="p-2 btn btn-danger px-4 mb-1">
+                                            className="w-100 p-2 btn btn-danger px-4 mb-1">
                                             Remove From Cart
                                         </button>
                                         <button 
                                             onClick={() => handleAddRemoveProductInWishlist(product._id, true)}
-                                            className="p-2 btn btn-secondary px-4">
+                                            className="w-100 p-2 btn btn-secondary px-4">
                                             Move To Wishlist
                                         </button>
                                     </div>
@@ -176,7 +131,7 @@ export default function Cart() {
                         ))}
                     </div>
                 </div>
-                <div className="col-md-5">
+                <div className="col-lg-6">
                     <div className="card p-4">
                         <h6 className="fw-bold">PRICE DETAILS</h6>
                         <hr />

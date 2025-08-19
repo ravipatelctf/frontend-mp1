@@ -12,7 +12,7 @@ export function ProductProvider({children}) {
 
     const [productsData, setProductsData] = useState([]);
     const [searchedProducts, setSearchedProducts] = useState([]);
-    
+    const [sizeValue, setSizeValue] = useState(null);
     // ---------------------------------------------------------------------
     // I don't understand this code block especially `useFetch()`
     const [loading, setLoading] = useState(true);
@@ -113,7 +113,7 @@ export function ProductProvider({children}) {
     }, 0);
 
     return (
-        <ProductContext.Provider value={{loading, error, productsData, setProductsData, handleAddRemoveProductInCart, noOfUniqueProductsInCart, quanityOfProductsInCart, handleAddRemoveProductInWishlist, noOfProductsInWishlist, searchedProducts, handleSearch}}>
+        <ProductContext.Provider value={{loading, error, productsData, setProductsData, sizeValue, setSizeValue, handleAddRemoveProductInCart, noOfUniqueProductsInCart, quanityOfProductsInCart, handleAddRemoveProductInWishlist, noOfProductsInWishlist, searchedProducts, handleSearch}}>
             {children}
         </ProductContext.Provider>
     )

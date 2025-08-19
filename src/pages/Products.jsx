@@ -1,54 +1,7 @@
 import { Link } from "react-router-dom";
 import useProductContext from "../contexts/ProductContext";
 import { useState } from "react";
-import ProductCard from "../components.js/ProductCard";
-
-// function ProductCard({product}) {
-//     const {handleAddRemoveProductInCart, handleAddRemoveProductInWishlist} = useProductContext();
-//     const [isInCart, setIsInCart] = useState(false);
-//     const [isInWishlist, setIsInWishlist] = useState(false);
-//     return (
-//             <div key={product._id} className="col-md-4 my-3">       
-//                 <div className="card">
-//                     <Link to={`/products/${product._id}`} className="text-decoration-none text-black">
-//                         <img 
-//                             src={`${product.imageUrl}?&w=400&h=400&fit=crop`}
-//                             alt={product.imageAlt} 
-//                             className="img-fluid"
-//                         />
-//                         <div className="card-body text-center">
-                            
-//                             <p>
-//                                 <span>{product.name.slice(0, 28)}</span>
-//                                 <br />
-//                             <small>Rating: <strong>{product.rating}</strong></small>
-//                             </p>
-                           
-//                             <p className="fw-bold"> &#8377;{product.price}</p>
-//                         </div>
-//                     </Link>
-//                     <Link 
-//                         to={`${isInWishlist ? "/wishlist" : "" }`}
-//                         onClick={() => {
-//                             setIsInWishlist(true)
-//                             handleAddRemoveProductInWishlist(product._id, true)
-//                         }} 
-//                         className="p-2 bg-secondary border text-light text-center text-decoration-none">
-//                         { isInWishlist ? "Go To WishList" : "Add To WishList"}
-//                     </Link>                    
-//                     <Link 
-//                         to={`${isInCart ? "/cart" : "" }`}
-//                         onClick={() => {
-//                             setIsInCart(true)
-//                             handleAddRemoveProductInCart(product._id, true)
-//                         }} 
-//                         className="p-2 bg-primary border text-light text-center text-decoration-none">
-//                         { isInCart ? "Go To Cart" : "Add To Cart" }
-//                     </Link>
-//                 </div>           
-//             </div>
-//     );
-// }
+import ProductCard from "../components/ProductCard";
 
 export default function Products() {
 
