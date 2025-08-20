@@ -62,10 +62,10 @@ export default function Products() {
                 <div className="col-md-3">
                     <form onSubmit={handleClearBtn}>
                     <p className="d-flex justify-content-between p-1">
-                        <span className="fw-bold fs-6">
+                        <span className="fw-bold fs-5">
                             Filters
                         </span>
-                        <button type="submit" className="fs-6">
+                        <button type="submit" className="fs-6 btn btn-outline-danger">
                             Clear
                         </button>
                     </p>

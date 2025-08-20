@@ -36,7 +36,7 @@ export function ProductQuantity({product}) {
     }
     return (
         <div>
-            <p><strong>Quantity: </strong>        
+            <p><strong  className="me-2">Quantity:</strong>        
                 <span>
                     <button 
                         onClick={() => {
@@ -44,7 +44,7 @@ export function ProductQuantity({product}) {
                             setBtnState("-")
                             handleDecrementProductQuantity()
                         }} 
-                        className={`fw-bold btn btn-outline-secondary ${btnState === "-" ? "active" : ""}`}>-</button>
+                        className={`fw-bold btn btn-outline-secondary btn-sm  ${btnState === "-" ? "active" : ""}`}>-</button>
                 </span>
                 <span className="px-2">
                     {product.quantity}
@@ -56,7 +56,7 @@ export function ProductQuantity({product}) {
                             setBtnState("+")
                             handleIncrementProductQuantity()
                         }} 
-                        className={`fw-bold btn btn-outline-secondary ${btnState === "+" ? "active" : ""}`}>+</button>
+                        className={`fw-bold btn btn-outline-secondary  btn-sm ${btnState === "+" ? "active" : ""}`}>+</button>
                 </span>                          
             </p> 
         </div>

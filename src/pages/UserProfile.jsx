@@ -36,13 +36,17 @@ export default function UserProfile() {
     
     async function handleAddNewAddress(event) {
         event.preventDefault()
-        newAddress ? toast.success("New address added successfully.") : toast.error("Enter an address before submitting.")
+        if (!newAddress) {
+            toast.error("Enter an address before submitting.");
+            return;
+        } else {
+            toast.success("New address added successfully.")
+        }
         const updatedAddress = [...user.address, newAddress];
         const dataToUpdate = {address: updatedAddress};
         const updateduser = await updateUserAddress(dataToUpdate);
 
         if (updateduser) {
-            
             setUser(updateduser);
             setAddress(updateduser.address)
         }
@@ -90,7 +94,9 @@ export default function UserProfile() {
                     <span className="fw-bold">Address: </span>
                     <br />
                     {Array.isArray(address) && address.map(ua => (
-                        <span key={ua}>{ua} <br /></span>
+                        // <span key={ua}>{ua} <br /></span>
+                        <input key={ua} type="text" value={ua} className="form-control mb-1" />
+                        
                     ))}
                 </p>
             </div>

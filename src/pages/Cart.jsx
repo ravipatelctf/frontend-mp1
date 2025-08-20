@@ -90,14 +90,14 @@ export default function Cart() {
                             <div key={product._id} className="card mb-5">
 
                                 <div className="row">
-                                    <div className="col-5">
+                                    <div className="col-md-5">
                                         <img 
                                             src={`${product.imageUrl}?&w=400&h=600&fit=crop`}
                                             alt={product.imageAlt} 
                                             className="img-fluid"
                                         />
                                     </div>
-                                    <div className="col-7 p-4">
+                                    <div className="col-md-7 px-4 pt-4 pb-2">
                                         <h6>{product.name.slice(0, 28)}</h6>
                                         
                                         <p>
@@ -121,7 +121,7 @@ export default function Cart() {
                                                 toast.success("Product removed from cart successfully.")
                                                 handleAddRemoveProductInCart(product._id, false)
                                             }} 
-                                            className="w-100 p-2 btn btn-danger px-4 mb-1">
+                                            className="w-100 btn btn-danger btn-sm mb-1 fw-bold">
                                             Remove From Cart
                                         </button>
                                         <button 
@@ -129,7 +129,7 @@ export default function Cart() {
                                                 toast.success("Product moved to wishlist successfully.")
                                                 handleAddRemoveProductInWishlist(product._id, true)
                                             }}
-                                            className="w-100 p-2 btn btn-secondary px-4">
+                                            className="w-100 btn btn-secondary btn-sm fw-bold">
                                             Move To Wishlist
                                         </button>
                                     </div>
