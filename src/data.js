@@ -1,6 +1,6 @@
 
-// deployed api => https://backend-mp1.vercel.app/api/products
-// localhost api => http://localhost:3000/api/products
+// deployed api baseUrl => https://backend-mp1.vercel.app/api/products
+// localhost api baseUrl => http://localhost:3000/api/products
 
 // ------------------------------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ export async function updateData(productId, dataToUpdate) {
             console.log("Failed to fetch data")
         }
         const {updatedData} = await response.json();
-        // console.log(updatedData)
+        
         return updatedData;
 
         } catch (error) {
@@ -43,3 +43,69 @@ export async function updateData(productId, dataToUpdate) {
     }
 
 // ------------------------------------------------------------------------------------------------
+
+export async function addNewAddress(dataToUpdate) {
+    try {
+        const response = await fetch(`https://backend-mp1.vercel.app/api/user/addresses`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataToUpdate)
+        });
+
+        if (!response.ok) {
+            console.log("Failed to fetch data")
+        }
+        const updatedData = await response.json();
+        
+        return updatedData;
+
+    } catch (error) {
+            throw error 
+    } 
+}
+
+// ------------------------------------------------------------------------------------------------
+
+export async function deleteAnAddress(addressId) {
+    try {
+        const response = await fetch(`https://backend-mp1.vercel.app/api/user/addresses/${addressId}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            console.log("Failed to fetch data")
+        }
+        const updatedData = await response.json();
+        
+        return updatedData;
+
+    } catch (error) {
+            throw error 
+    } 
+}
+
+// ------------------------------------------------------------------------------------------------
+
+export async function updateAnAddress(addressId, updatedAddress) {
+    try {
+        const response = await fetch(`https://backend-mp1.vercel.app/api/user/addresses/${addressId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedAddress)
+        });
+
+        if (!response.ok) {
+            console.log("Failed to fetch data")
+        }
+        const updatedData = await response.json();
+        
+        return updatedData;
+
+    } catch (error) {
+            throw error 
+    } 
+}
