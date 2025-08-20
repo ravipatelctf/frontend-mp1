@@ -44,7 +44,7 @@ export function ProductQuantity({product}) {
                             setBtnState("-")
                             handleDecrementProductQuantity()
                         }} 
-                        className={`fw-bold px-3 btn btn-outline-secondary ${btnState === "-" ? "active" : ""}`}>-</button>
+                        className={`fw-bold btn btn-outline-secondary ${btnState === "-" ? "active" : ""}`}>-</button>
                 </span>
                 <span className="px-2">
                     {product.quantity}
@@ -56,7 +56,7 @@ export function ProductQuantity({product}) {
                             setBtnState("+")
                             handleIncrementProductQuantity()
                         }} 
-                        className={`fw-bold px-3 btn btn-outline-secondary ${btnState === "+" ? "active" : ""}`}>+</button>
+                        className={`fw-bold btn btn-outline-secondary ${btnState === "+" ? "active" : ""}`}>+</button>
                 </span>                          
             </p> 
         </div>
