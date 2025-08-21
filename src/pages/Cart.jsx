@@ -9,7 +9,7 @@ import { roundOffNum } from "../components/atomicFunctions";
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
-    const {productSize, productQuantity, productsData, loading, error, sizeValue, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
+    const {btnState, setBtnState, productSize, productQuantity, productsData, loading, error, sizeValue, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
     const [selectedAddress, setSelectedAddress] = useState("");
     const [placeOrderAddresses, setPlaceOrderAddresses] = useState([]);
     const [orderSummaryStatus, setOrderSummaryStatus] = useState(false);
@@ -28,6 +28,16 @@ export default function Cart() {
         }
         loadData();
     }, []);
+
+    const productFoundInCart = productsData.find(product => product.isAddedToCart && !product.isAddedToWishlist)
+    if(!productFoundInCart) {
+        return (
+            <div className="mt-4">
+                <h1 className="text-center">MY CART ({noOfUniqueProductsInCart})</h1>
+                <p className="text-center py-4">No products found in cart!</p>
+            </div>
+        )  
+    }
 
     if (loading) {
         return <p className="text-center">Loading...</p>
@@ -85,11 +95,10 @@ export default function Cart() {
             console.log("newOrderObject:", newOrderObject)
             await createNewOrder(newOrderObject)
             toast.success("Order placed successfully.");
+            
         } catch (error) {
             toast.error("Failed to place order!")
         }
-        
-        // setSelectedAddress("")
     }   
     // -------------------------------------------------------------------------------------
     return (
@@ -104,7 +113,7 @@ export default function Cart() {
                                 <div className="row">
                                     <div className="col-md-5">
                                         <img 
-                                            src={`${product.imageUrl}?&w=400&h=600&fit=crop`}
+                                            src={`${product.imageUrl}?&w=400&h=650&fit=crop`}
                                             alt={product.imageAlt} 
                                             className="img-fluid"
                                         />
@@ -133,7 +142,7 @@ export default function Cart() {
                                                 toast.success("Product removed from cart successfully.")
                                                 handleAddRemoveProductInCart(product._id, false)
                                             }} 
-                                            className="w-100 btn btn-danger btn-sm mb-1 fw-bold">
+                                            className="w-100 btn btn-danger mb-1 fw-bold">
                                             Remove From Cart
                                         </button>
                                         <button 
@@ -141,7 +150,7 @@ export default function Cart() {
                                                 toast.success("Product moved to wishlist successfully.")
                                                 handleAddRemoveProductInWishlist(product._id, true)
                                             }}
-                                            className="w-100 btn btn-secondary btn-sm fw-bold">
+                                            className="w-100 btn btn-secondary fw-bold">
                                             Move To Wishlist
                                         </button>
                                     </div>
@@ -152,7 +161,7 @@ export default function Cart() {
                     </div>
                 </div>
                 <div className="col-lg-6">
-                    <div className="card p-4">
+                    <div className="card p-4 mt-2">
                         <h6 className="fw-bold">PRICE DETAILS</h6>
                         <hr />
                         <p className="d-flex justify-content-between">
@@ -193,13 +202,12 @@ export default function Cart() {
                                         <option key={e._id} value={e.address}>{e.address}</option>
                                     ))
                                 }
-                                {/* <option value="Test Address 1">Test Address 1</option>
-                                <option value="Test Address 2">Test Address 2</option> */}
+                                
                                 
                             </select>
                             <button
                                 type="submit"
-                                className={`btn ${quanityOfProductsInCart <= 0 ? "btn-secondary" : "btn-success fw-bold"}`}
+                                className={`btn ${quanityOfProductsInCart <= 0 ? "btn-secondary fw-bold mt-2 w-100 py-2" : "btn-success fw-bold mt-2 w-100 py-2"}`}
                                 disabled={quanityOfProductsInCart <= 0}    
                             >
                                 PLACE ORDER
@@ -214,7 +222,12 @@ export default function Cart() {
                                     <h5>Order Summary</h5>
                                 </div>
                                 <div className="card-body">
-                                    <p className="card-text">Address: {selectedAddress ? selectedAddress : "No address selected!"}</p>
+                                    <p><strong>Number of Products Ordered: </strong>{quanityOfProductsInCart}</p>
+                                    <p><strong>Total Price: </strong>&#8377;{roundOffNum(totalPrice)}</p>
+                                    <p><strong>Discount : </strong>&#8377;{roundOffNum(totalDiscountedAmount)}</p>
+                                    <p><strong>Delivery Charge: </strong>&#8377;499</p>
+                                    <p><strong>Total Amount Paid: </strong>&#8377;{roundOffNum(totalAmountAfterDiscountPlusDeliveryCharges)}</p>
+                                    <p><strong>Address: </strong>{selectedAddress ? selectedAddress : "No address selected!"}</p>
                                 </div>
                                         
                             </div>

@@ -54,13 +54,13 @@ export default function Wishlist() {
 
     return (
         <main className="container">
-            <h1>Wishlist page</h1>
+            <h1 className="text-center py-4">Wishlist page</h1>
             <div className="row">
                 {wishlistProducts.length > 0 ? (wishlistProducts.map((product) => (
                     <ProductCard key={product._id} product={product} />
                     )
                 )) : (
-                    <p className="text-center py-4">There are NO products in wishlist.</p>
+                    <p className="text-center py-2">No products found in wishlist!</p>
                 )
             }
             </div>

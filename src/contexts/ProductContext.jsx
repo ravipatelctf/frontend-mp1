@@ -22,6 +22,8 @@ export function ProductProvider({children}) {
     // ----------------------------------------------------------------------
     const [productSize, setProductSize] = useState(null);
     const [productQuantity, setProductQuantity] = useState(null);
+
+    const [btnState, setBtnState] = useState(null);
     // ----------------------------------------------------------------------
 
     useEffect(() => {
@@ -109,7 +111,7 @@ export function ProductProvider({children}) {
     }, 0);
 
     return (
-        <ProductContext.Provider value={{address, setAddresses, productSize, setProductSize, productQuantity, setProductQuantity, loading, error, productsData, setProductsData, sizeValue, setSizeValue, handleAddRemoveProductInCart, noOfUniqueProductsInCart, quanityOfProductsInCart, handleAddRemoveProductInWishlist, noOfProductsInWishlist, searchedProducts, handleSearch}}>
+        <ProductContext.Provider value={{btnState, setBtnState, address, setAddresses, productSize, setProductSize, productQuantity, setProductQuantity, loading, error, productsData, setProductsData, sizeValue, setSizeValue, handleAddRemoveProductInCart, noOfUniqueProductsInCart, quanityOfProductsInCart, handleAddRemoveProductInWishlist, noOfProductsInWishlist, searchedProducts, handleSearch}}>
             {children}
         </ProductContext.Provider>
     )

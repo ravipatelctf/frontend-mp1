@@ -1,16 +1,30 @@
 
 import useProductContext from "../contexts/ProductContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export function ProductQuantity({product}) {
 
-    const {productsData, setProductsData, productQuantity, setProductQuantity} = useProductContext();
-    const [btnState, setBtnState] = useState(null);
-    function handleIncrementProductQuantity() {
+    const {btnState, setBtnState, productsData, setProductsData, productQuantity, setProductQuantity} = useProductContext();
+    
+    const productId = product._id;
 
+    // ----------------------------------------------------------------------
+    // set a default value for quantity on initial mount of component
+    useEffect(() => {
+        setProductQuantity((preValues) => {
+
+            return {
+                ...preValues,
+                [productId] : 1
+            }
+        })
+    }, [])
+    // ----------------------------------------------------------------------
+
+    function handleIncrementProductQuantity() {
         // --------------------------------------------
-        const productId = product._id;
+        // const productId = product._id;
         setProductQuantity((preValues) => (
             {
                 ...preValues,
@@ -34,7 +48,7 @@ export function ProductQuantity({product}) {
     function handleDecrementProductQuantity() {
         
         // --------------------------------------------
-        const productId = product._id;
+        // const productId = product._id;
         setProductQuantity((preValues) => (
             {
                 ...preValues,
