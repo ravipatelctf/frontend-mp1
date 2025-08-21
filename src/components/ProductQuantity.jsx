@@ -5,9 +5,19 @@ import { toast } from "react-toastify";
 
 export function ProductQuantity({product}) {
 
-    const {productsData, setProductsData} = useProductContext();
+    const {productsData, setProductsData, productQuantity, setProductQuantity} = useProductContext();
     const [btnState, setBtnState] = useState(null);
     function handleIncrementProductQuantity() {
+
+        // --------------------------------------------
+        const productId = product._id;
+        setProductQuantity((preValues) => (
+            {
+                ...preValues,
+                [productId]: product.quantity + 1,
+            }
+        ))
+        // --------------------------------------------
 
         const updatedProduct = productsData.map((curr) => {
             if (curr._id != product._id) {
@@ -22,6 +32,16 @@ export function ProductQuantity({product}) {
     }
 
     function handleDecrementProductQuantity() {
+        
+        // --------------------------------------------
+        const productId = product._id;
+        setProductQuantity((preValues) => (
+            {
+                ...preValues,
+                [productId]: product.quantity - 1,
+            }
+        ))
+        // --------------------------------------------
 
         const updatedProduct = productsData.map((curr) => {
             if (curr._id != product._id) {

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 export function ProductCard({product}) {   
     return (
-        <div className="col-md-3 my-3">       
+        <div className="col-md-4 my-3">       
             <div className="card">
                 <CardContent product={product} />
             </div>           

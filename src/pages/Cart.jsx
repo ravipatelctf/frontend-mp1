@@ -3,36 +3,30 @@ import { useState, useEffect } from "react";
 import useProductContext from "../contexts/ProductContext";    
 import { ProductQuantity } from "../components/ProductQuantity";
 import { ProductSize } from "../components/ProductSize";
-import {updateData} from "../data";
+import { createNewOrder, getUser} from "../data";
 import { toast } from "react-toastify";
-import { useUserContext } from "../contexts/UserContext";
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
-    const {productsData, loading, error, sizeValue, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
+    const {productSize, productQuantity, productsData, loading, error, sizeValue, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
     const [selectedAddress, setSelectedAddress] = useState("");
     const [placeOrderAddresses, setPlaceOrderAddresses] = useState([]);
+    const [orderSummaryStatus, setOrderSummaryStatus] = useState(false);
     // -----------------------------------------------------------------------------------
-        // fetch the user once when the component mounts
-        useEffect(() => {
-    
-            async function fetchUser() {
-                try {
-                    const response = await fetch(`https://backend-mp1.vercel.app/api/user`);
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch users: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    
-                    setPlaceOrderAddresses(data.addresses);
-                    
-                } catch (error) {
-                    throw error;
-                }
+
+    // fetch the user once when the component mounts
+    useEffect(() => {
+
+        async function loadData() {
+            try {
+                const data = await getUser();
+                setPlaceOrderAddresses(data.addresses); 
+            } catch (error) {
+                throw error;
             }
-    
-            fetchUser();
-        }, []);
+        }
+        loadData();
+    }, []);
 
     if (loading) {
         return <p className="text-center">Loading...</p>
@@ -47,7 +41,7 @@ export default function Cart() {
         return Number((total).toFixed(2));
     }, 0)
 
-    const discountedPrice = (product) => {
+    const discount = (product) => {
         const value = (product.price) - (product.price * product.discountPercentage * 0.01);
         return Number((value).toFixed(2));
     }
@@ -60,47 +54,42 @@ export default function Cart() {
     const totalAmountAfterDiscount = Number((totalPrice - totalDiscountedAmount).toFixed(2));
     const totalAmountAfterDiscountPlusDeliveryCharges = Number((totalAmountAfterDiscount + 499).toFixed(2));
     const savedAmount = Number((totalPrice - totalAmountAfterDiscount).toFixed(2));  
-    
+
     // -------------------------------------------------------------------------------------
     // place order logic
-    function handlePlaceOrder(event) {
+    async function handlePlaceOrder(event) {
         event.preventDefault();
-        productsData.map(async (product) => {
-            if(product.isAddedToCart) {
-                await addToOrder({"productId": product._id});
-                await updateData(product._id, {"size": sizeValue});
-            }
-        })
-        if (selectedAddress) {
-            toast.success("Order placed successfully.")
-        } else {
-            toast.warn("Select an address to place order.")
-        }
-        setSelectedAddress("")
-    }
 
-// ------------------------------------------------------------------------------------------
-    // API call for updating user address
-    async function addToOrder(dataToUpdate) {
         try {
-            const response = await fetch(`https://backend-mp1.vercel.app/api/user/orders`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(dataToUpdate)
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update user address.");
+            if (!selectedAddress) {
+                toast.warn("Select an address to place order.")
+                return;
             }
-            const updatedUserData = await response.json();
-            return updatedUserData;
+
+            const productsInCart = productsData.filter(product => product.isAddedToCart)
+            const productsArray = productsInCart.map(item => {
+                return {
+                    "product": item._id,
+                    "quantity": productQuantity[item._id],
+                    "size": productSize[item._id],
+                }
+            })
+            const newOrderObject = {
+                "products": productsArray,
+                "totalPrice": totalPrice,
+                "discount": totalDiscountedAmount,
+                "deliveryCharge": 499,
+                "address": selectedAddress,                
+            };
+            console.log("newOrderObject:", newOrderObject)
+            await createNewOrder(newOrderObject)
+            toast.success("Order placed successfully.");
         } catch (error) {
-            throw error;
+            toast.error("Failed to place order!")
         }
-    }
-   
+        
+        // setSelectedAddress("")
+    }   
     // -------------------------------------------------------------------------------------
     return (
         <main className="container py-4">
@@ -124,7 +113,7 @@ export default function Cart() {
                                         
                                         <p>
                                             <span className="fs-4 me-2 fw-bold">
-                                                &#8377;{discountedPrice(product)}
+                                                &#8377;{discount(product)}
                                             </span>
                                             <small className="text-decoration-line-through text-secondary">
                                                 &#8377;{product.price}
@@ -136,7 +125,7 @@ export default function Cart() {
                                         </p>
                                         <ProductQuantity product={product} />
                                         
-                                        <ProductSize />
+                                        <ProductSize product={product} />
                                         
                                         <button 
                                             onClick={() => {
@@ -186,7 +175,10 @@ export default function Cart() {
                         <hr />
                         <p>You will save &#8377;{savedAmount} on this order </p>
 
-                        <form onSubmit={(event) => handlePlaceOrder(event)}>
+                        <form onSubmit={(event) => {
+                            setOrderSummaryStatus(true);
+                            handlePlaceOrder(event)
+                        }}>
                             <select 
                                 onChange={(event) => setSelectedAddress(event.target.value)} 
                                 name="address" 
@@ -200,7 +192,8 @@ export default function Cart() {
                                         <option key={e._id} value={e.address}>{e.address}</option>
                                     ))
                                 }
-                                
+                                {/* <option value="Test Address 1">Test Address 1</option>
+                                <option value="Test Address 2">Test Address 2</option> */}
                                 
                             </select>
                             <button
@@ -212,6 +205,21 @@ export default function Cart() {
                             </button>
                         </form>
                     </div>
+                    {/* order summary */}
+                    {
+                        orderSummaryStatus && (
+                            <div className="card p-4 mt-2">
+                                <div className="card-header">
+                                    <h5>Order Summary</h5>
+                                </div>
+                                <div className="card-body">
+                                    <p className="card-text">Address: {selectedAddress ? selectedAddress : "No address selected!"}</p>
+                                </div>
+                                        
+                            </div>
+                        )
+                    }
+                    
                 </div>
             </div>
         </main>

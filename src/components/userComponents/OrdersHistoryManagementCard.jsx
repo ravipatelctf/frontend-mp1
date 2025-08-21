@@ -19,11 +19,26 @@ export function OrdersHistoryManagementCard() {
                     {orderStatus ? "Hide Order History" : "See Order History"}
                 </button>
                 
-                <div className="row">
+                <ul className="list-group py-4">
                     {orderStatus && Array.isArray(orders) && orders?.map(order => (
-                        <ProductCard key={order._id} product={order} />
+                        // <ProductCard key={order._id} product={order} />
+                        <li className="list-group-item">
+                            <p><strong>Number of Products Ordered: </strong>{order.products.length}</p>
+                            <p><strong>Total Price: </strong>&#8377;{order.totalPrice}</p>
+                            <p><strong>Discount : </strong>&#8377;{order.discount}</p>
+                            <p><strong>Delivery Charge: </strong>&#8377;{order.deliveryCharge}</p>
+                            <p><strong>Total Amount Paid: </strong>&#8377;{order.totalPrice - order.discount}</p>
+                            <p><strong>Address: </strong>{order.address}</p>
+                            <div className="row">
+                                {
+                                    order.products.map((item) => (
+                                        <ProductCard key={item.product._id} product={item.product} />
+                                    ))
+                                }
+                            </div>
+                        </li>
                     ))}
-                </div>
+                </ul>
             </div>
         </>
     )

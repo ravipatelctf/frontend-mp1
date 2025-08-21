@@ -13,11 +13,17 @@ export function ProductProvider({children}) {
     const [productsData, setProductsData] = useState([]);
     const [searchedProducts, setSearchedProducts] = useState([]);
     const [sizeValue, setSizeValue] = useState(null);
+    const [address, setAddresses] = useState([]);
 
     // ---------------------------------------------------------------------
     // I don't understand this code block especially `useFetch()`
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+
+    // ----------------------------------------------------------------------
+    const [productSize, setProductSize] = useState(null);
+    const [productQuantity, setProductQuantity] = useState(null);
+    // ----------------------------------------------------------------------
 
     useEffect(() => {
         async function fetchProducts() {
@@ -104,7 +110,7 @@ export function ProductProvider({children}) {
     }, 0);
 
     return (
-        <ProductContext.Provider value={{loading, error, productsData, setProductsData, sizeValue, setSizeValue, handleAddRemoveProductInCart, noOfUniqueProductsInCart, quanityOfProductsInCart, handleAddRemoveProductInWishlist, noOfProductsInWishlist, searchedProducts, handleSearch}}>
+        <ProductContext.Provider value={{address, setAddresses, productSize, setProductSize, productQuantity, setProductQuantity, loading, error, productsData, setProductsData, sizeValue, setSizeValue, handleAddRemoveProductInCart, noOfUniqueProductsInCart, quanityOfProductsInCart, handleAddRemoveProductInWishlist, noOfProductsInWishlist, searchedProducts, handleSearch}}>
             {children}
         </ProductContext.Provider>
     )

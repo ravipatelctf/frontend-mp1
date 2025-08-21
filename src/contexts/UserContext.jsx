@@ -24,6 +24,7 @@ export function UserProvider({children}) {
                 setUser(data);
                 setAddresses(data.addresses);
                 setOrders(data.orders);
+                console.log("data:", data);
             } catch (error) {
                 throw error;
             }
