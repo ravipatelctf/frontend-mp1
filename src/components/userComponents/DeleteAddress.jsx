@@ -7,6 +7,7 @@ export function DeleteAddress({elementId}) {
     const {setUser, setAddresses} = useUserContext();
     async function handleDeleteAddress(elementId) {
         try {
+            toast.info("Deleting Address...")
             const updateddata = await deleteAnAddress(elementId);
             if (updateddata) {
                 setUser(updateddata.user);

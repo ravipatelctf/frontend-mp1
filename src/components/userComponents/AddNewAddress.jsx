@@ -14,6 +14,8 @@ export function AddNewAddress() {
         if (!newAddress) {
             toast.error("Enter an address before submitting.");
             return;
+        } else {
+            toast.info("Adding New Address...")
         }
         const dataToUpdate = {"address": newAddress};
         const updateduser = await addNewAddress(dataToUpdate);

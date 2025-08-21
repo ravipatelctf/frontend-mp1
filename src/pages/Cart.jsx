@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
-    const {productsData, loading, error, sizeValue, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, searchedProducts} = useProductContext();
+    const {productsData, loading, error, sizeValue, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
     const [selectedAddress, setSelectedAddress] = useState("");
     
 
@@ -144,7 +144,7 @@ export default function Cart() {
                         <h6 className="fw-bold">PRICE DETAILS</h6>
                         <hr />
                         <p className="d-flex justify-content-between">
-                            <span>Price ( {noOfUniqueProductsInCart} {noOfUniqueProductsInCart > 1 ? "items" : "item"} )</span>
+                            <span>Price ( {quanityOfProductsInCart} {quanityOfProductsInCart > 1 ? "items" : "item"} )</span>
                             <span>+ &#8377;{totalPrice}</span>
                         </p>
                         <p className="d-flex justify-content-between">

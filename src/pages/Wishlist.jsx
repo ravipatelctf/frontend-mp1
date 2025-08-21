@@ -49,13 +49,20 @@ export default function Wishlist() {
     if (error) {
         return <p className="text-center">Error occurred...</p>
     }
+
+    const wishlistProducts = productsData.filter(product => product.isAddedToWishlist);
+
     return (
         <main className="container">
             <h1>Wishlist page</h1>
             <div className="row">
-                {productsData?.map((product) => product.isAddedToWishlist && (
+                {wishlistProducts.length > 0 ? (wishlistProducts.map((product) => (
                     <ProductCard key={product._id} product={product} />
-                ))}
+                    )
+                )) : (
+                    <p className="text-center py-4">There are NO products in wishlist.</p>
+                )
+            }
             </div>
         </main>
 
