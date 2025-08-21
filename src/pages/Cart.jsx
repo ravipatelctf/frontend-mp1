@@ -1,16 +1,38 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useProductContext from "../contexts/ProductContext";    
 import { ProductQuantity } from "../components/ProductQuantity";
 import { ProductSize } from "../components/ProductSize";
 import {updateData} from "../data";
 import { toast } from "react-toastify";
+import { useUserContext } from "../contexts/UserContext";
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
     const {productsData, loading, error, sizeValue, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
     const [selectedAddress, setSelectedAddress] = useState("");
+    const [placeOrderAddresses, setPlaceOrderAddresses] = useState([]);
+    // -----------------------------------------------------------------------------------
+        // fetch the user once when the component mounts
+        useEffect(() => {
     
+            async function fetchUser() {
+                try {
+                    const response = await fetch(`https://backend-mp1.vercel.app/api/user`);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch users: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    
+                    setPlaceOrderAddresses(data.addresses);
+                    
+                } catch (error) {
+                    throw error;
+                }
+            }
+    
+            fetchUser();
+        }, []);
 
     if (loading) {
         return <p className="text-center">Loading...</p>
@@ -173,13 +195,19 @@ export default function Cart() {
                                 defaultValue={selectedAddress}
                             >
                                 <option value="" disabled>Select Address</option>
-                                <option value="Address 1">Address 1</option>
-                                <option value="Address 2">Address 2</option>
-                                <option value="Address 3">Address 3</option>
+                                {
+                                    placeOrderAddresses?.map(e => (
+                                        <option key={e._id} value={e.address}>{e.address}</option>
+                                    ))
+                                }
+                                
+                                
                             </select>
                             <button
                                 type="submit"
-                                className="p-2 bg-primary border text-light text-center text-decoration-none">
+                                className={`btn ${quanityOfProductsInCart <= 0 ? "btn-secondary" : "btn-success fw-bold"}`}
+                                disabled={quanityOfProductsInCart <= 0}    
+                            >
                                 PLACE ORDER
                             </button>
                         </form>
