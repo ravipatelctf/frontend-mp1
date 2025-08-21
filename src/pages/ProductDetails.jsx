@@ -100,7 +100,7 @@ export default function ProductDetails() {
                     </p>
                     
                     <ProductQuantity product={targetProduct} />
-                    <ProductSize />
+                    <ProductSize product={targetProduct}/>
                     <p className="fw-bold">Description</p>
                     <ul>
                         <li>{targetProduct.description}</li>
