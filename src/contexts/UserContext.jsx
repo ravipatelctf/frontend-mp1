@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-
+import { getUser } from "../data";
 
 const UserContext = createContext();
 export const useUserContext = () => useContext(UserContext);
@@ -16,15 +16,10 @@ export function UserProvider({children}) {
 
         async function fetchUser() {
             try {
-                const response = await fetch(`https://backend-mp1.vercel.app/api/user`);
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch users: ${response.status}`);
-                }
-                const data = await response.json();
+                const data = await getUser();
                 setUser(data);
                 setAddresses(data.addresses);
                 setOrders(data.orders);
-                console.log("data:", data);
             } catch (error) {
                 throw error;
             }

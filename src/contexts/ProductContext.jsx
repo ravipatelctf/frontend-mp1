@@ -16,7 +16,6 @@ export function ProductProvider({children}) {
     const [address, setAddresses] = useState([]);
 
     // ---------------------------------------------------------------------
-    // I don't understand this code block especially `useFetch()`
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 

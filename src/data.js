@@ -52,7 +52,6 @@ export async function getUser() {
         }
         const data = await response.json();
         return data;
-        console.log("data:", data);
     } catch (error) {
         throw error;
     }
@@ -125,28 +124,6 @@ export async function updateAnAddress(addressId, updatedAddress) {
             throw error 
     } 
 }
-
-// ------------------------------------------------------------------------------------------
-// API call for updating user with new orders
-// export async function addToOrder(dataToUpdate) {
-//     try {
-//         const response = await fetch(`https://backend-mp1.vercel.app/api/user/orders`, {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             body: JSON.stringify(dataToUpdate)
-//         });
-
-//         if (!response.ok) {
-//             throw new Error("Failed to update user address.");
-//         }
-//         const updatedUserData = await response.json();
-//         return updatedUserData;
-//     } catch (error) {
-//         throw error;
-//     }
-// }
 
 // ------------------------------------------------------------------------------------------
 

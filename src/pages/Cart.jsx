@@ -5,6 +5,7 @@ import { ProductQuantity } from "../components/ProductQuantity";
 import { ProductSize } from "../components/ProductSize";
 import { createNewOrder, getUser} from "../data";
 import { toast } from "react-toastify";
+import { roundOffNum } from "../components/atomicFunctions";
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
@@ -38,22 +39,22 @@ export default function Cart() {
 
     const totalPrice = productsData.reduce((total, curr) => {
         total += curr.isAddedToCart === true ? curr.price * curr.quantity: 0;
-        return Number((total).toFixed(2));
+        return roundOffNum(total);
     }, 0)
 
     const discount = (product) => {
         const value = (product.price) - (product.price * product.discountPercentage * 0.01);
-        return Number((value).toFixed(2));
+        return roundOffNum(value);
     }
 
     const totalDiscountedAmount = productsData.reduce((total, curr) => {
         total += curr.isAddedToCart ? (curr.price * curr.quantity * curr.discountPercentage * 0.01) : 0;
-        return Number((total).toFixed(2));
+        return roundOffNum(total);
     }, 0)
 
-    const totalAmountAfterDiscount = Number((totalPrice - totalDiscountedAmount).toFixed(2));
-    const totalAmountAfterDiscountPlusDeliveryCharges = Number((totalAmountAfterDiscount + 499).toFixed(2));
-    const savedAmount = Number((totalPrice - totalAmountAfterDiscount).toFixed(2));  
+    const totalAmountAfterDiscount = roundOffNum(totalPrice - totalDiscountedAmount);
+    const totalAmountAfterDiscountPlusDeliveryCharges = roundOffNum(totalAmountAfterDiscount + 499);
+    const savedAmount = roundOffNum(totalPrice - totalAmountAfterDiscount);  
 
     // -------------------------------------------------------------------------------------
     // place order logic
