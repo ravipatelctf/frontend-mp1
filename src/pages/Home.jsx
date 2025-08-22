@@ -1,9 +1,18 @@
 import {Link} from "react-router-dom";
+import useProductContext from "../contexts/ProductContext";
 
 function CardImage({productCategory, imgUrl}) {
+
+    const {selectedCategories, setSelectedCategories} = useProductContext();
+
     return (
         <div className="col-md-4">
-            <Link to="/products" className="text-decoration-none">
+            <Link 
+                to="/products"
+                className="text-decoration-none"
+
+                onClick={() => setSelectedCategories((preValues) => [...preValues, productCategory])}    
+            >
             <div 
                 className="card text-center border text-dark d-flex align-items-center justify-content-center"
                 style={{
@@ -27,7 +36,10 @@ export default function Home() {
         <>
             <main className="container py-4">
                 <div className="row">
-                    <CardImage productCategory="Men" imgUrl="https://images.unsplash.com/photo-1625910513520-bed0389ce32f?&w=200&h=100&fit=crop" />
+                    <CardImage 
+                        
+                        productCategory="Men" 
+                        imgUrl="https://images.unsplash.com/photo-1625910513520-bed0389ce32f?&w=200&h=100&fit=crop" />
                     <CardImage productCategory="Women" imgUrl="https://images.unsplash.com/photo-1712160059102-19368c085984?&w=200&h=100&fit=crop" />
                     <CardImage productCategory="Kids" imgUrl="https://images.unsplash.com/photo-1739047596014-d921ce553f1c?&w=200&h=100&fit=crop" />
                 </div>

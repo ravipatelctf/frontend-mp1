@@ -25,6 +25,8 @@ export function ProductProvider({children}) {
 
     const [btnState, setBtnState] = useState(null);
     // ----------------------------------------------------------------------
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    // ----------------------------------------------------------------------
 
     useEffect(() => {
         async function fetchProducts() {
@@ -42,7 +44,15 @@ export function ProductProvider({children}) {
     }, []);
 
     // ----------------------------------------------------------------------
-
+    function handleCategory(event) {
+        const {checked, value} = event.target;
+        if (checked) {
+            setSelectedCategories((preValues) => [...preValues, value]);
+        } else {
+            setSelectedCategories((preValues) => preValues.filter(pv => pv !== value))
+        }
+    }
+    // ----------------------------------------------------------------------
 
     function handleSearch(event) {
         setSearchedProducts(productsData.filter(product => product.name.toLowerCase().includes(event.target.value)));
@@ -111,7 +121,32 @@ export function ProductProvider({children}) {
     }, 0);
 
     return (
-        <ProductContext.Provider value={{btnState, setBtnState, address, setAddresses, productSize, setProductSize, productQuantity, setProductQuantity, loading, error, productsData, setProductsData, sizeValue, setSizeValue, handleAddRemoveProductInCart, noOfUniqueProductsInCart, quanityOfProductsInCart, handleAddRemoveProductInWishlist, noOfProductsInWishlist, searchedProducts, handleSearch}}>
+        <ProductContext.Provider value={{
+            btnState,
+            setBtnState, 
+            address, 
+            setAddresses, 
+            productSize, 
+            setProductSize, 
+            productQuantity, 
+            setProductQuantity, 
+            loading, 
+            error, 
+            productsData, 
+            setProductsData, 
+            sizeValue, 
+            setSizeValue, 
+            handleAddRemoveProductInCart, 
+            noOfUniqueProductsInCart, 
+            quanityOfProductsInCart, 
+            handleAddRemoveProductInWishlist, 
+            noOfProductsInWishlist, 
+            searchedProducts, 
+            handleSearch, 
+            selectedCategories, 
+            setSelectedCategories,
+            handleCategory    
+        }}>
             {children}
         </ProductContext.Provider>
     )
