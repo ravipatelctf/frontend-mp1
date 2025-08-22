@@ -9,19 +9,27 @@ export function OrdersHistoryManagementCard() {
     const {orders} = useUserContext();
     const [orderStatus, setOrderStatus] = useState(false);
 
+    function handleOrderStatus() {
+        if (orders.length <= 0) {
+            toast.warn("Order history is empty!");
+            return;
+        }
+        !orderStatus && toast.info("Orders are visible now.")
+        setOrderStatus(!orderStatus)
+        orderStatus && toast.info("Orders are hidden now.")
+    }
+    
     return (
         <>
             <div className="mt-2">
                 <button className="btn btn-info" onClick={() => {
-                    !orderStatus && toast.info("Orders are visible now.")
-                    orderStatus && toast.info("Orders are hidden now.")
-                    setOrderStatus(!orderStatus)
+                    handleOrderStatus()
                 }}>
                     {orderStatus ? "Hide Order History" : "See Order History"}
                 </button>
                 
                 <ul className="list-group py-4">
-                    {orderStatus && Array.isArray(orders) && orders?.map(order => (
+                    {orderStatus &&  orders?.map(order => (
                        
                         <li key={order._id} className="list-group-item">
                             <p><strong>Number of Products Ordered: </strong>{order.products.length}</p>

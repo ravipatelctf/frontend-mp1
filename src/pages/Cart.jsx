@@ -9,10 +9,10 @@ import { roundOffNum } from "../components/atomicFunctions";
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
-    const {cartProducts, handleRemoveFromCartProducts, handleAddToWishlistProducts, btnState, setBtnState, productSize, productQuantity, productsData, loading, error, sizeValue, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
+    const {orderSummaryStatus, setOrderSummaryStatus, orderSummary, setOrderSummary, cartProducts, handleRemoveFromCartProducts, handleAddToWishlistProducts, btnState, setBtnState, productSize, productQuantity, productsData, loading, error, sizeValue, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
     const [selectedAddress, setSelectedAddress] = useState("");
     const [placeOrderAddresses, setPlaceOrderAddresses] = useState([]);
-    const [orderSummaryStatus, setOrderSummaryStatus] = useState(false);
+    
     // -----------------------------------------------------------------------------------
 
     // fetch the user once when the component mounts
@@ -67,9 +67,7 @@ export default function Cart() {
 
     // -------------------------------------------------------------------------------------
     // place order logic
-    async function handlePlaceOrder(event) {
-        event.preventDefault();
-
+    async function handlePlaceOrder() {
         try {
             if (!selectedAddress) {
                 toast.warn("Select an address to place order.")
@@ -93,17 +91,24 @@ export default function Cart() {
             console.log("newOrderObject:", newOrderObject)
             await createNewOrder(newOrderObject)
             toast.success("Order placed successfully.");
-            
         } catch (error) {
             toast.error("Failed to place order!")
         }
     }   
+    // -------------------------------------------------------------------------------------
+    const orderSummaryObj = {
+        quanityOfProductsInCart,
+        totalPrice,
+        totalDiscountedAmount,
+        totalAmountAfterDiscountPlusDeliveryCharges,
+        selectedAddress
+    };
 
-    // const cartProducts = productsData.filter((product) => product.isAddedToCart);
 
     // -------------------------------------------------------------------------------------
     return (
         <main className="container py-4">
+            <OrderSummary />
             <h1 className="text-center">MY CART ({noOfUniqueProductsInCart})</h1>
             <div className="row justify-content-between py-4">
                 <div className="col-lg-6 p-2">
@@ -187,10 +192,7 @@ export default function Cart() {
                         <hr />
                         <p>You will save &#8377;{savedAmount} on this order </p>
 
-                        <form onSubmit={(event) => {
-                            setOrderSummaryStatus(true);
-                            handlePlaceOrder(event)
-                        }}>
+                        <div>
                             <select 
                                 onChange={(event) => setSelectedAddress(event.target.value)} 
                                 name="address" 
@@ -208,37 +210,52 @@ export default function Cart() {
                                 
                             </select>
                             <button
-                                type="submit"
+                                type="button"
                                 className={`btn ${quanityOfProductsInCart <= 0 ? "btn-secondary fw-bold mt-2 w-100 py-2" : "btn-success fw-bold mt-2 w-100 py-2"}`}
-                                disabled={quanityOfProductsInCart <= 0}    
+                                disabled={quanityOfProductsInCart <= 0}
+                                onClick={() => {
+                                    setOrderSummary(orderSummaryObj)
+                                    setOrderSummaryStatus(true);
+                                    handlePlaceOrder()
+                                }}  
                             >
                                 PLACE ORDER
                             </button>
-                        </form>
+                        </div>
                     </div>
-                    {/* order summary */}
-                    {
-                        orderSummaryStatus && (
-                            <div className="card p-4 mt-2">
-                                <div className="card-header">
-                                    <h5>Order Summary</h5>
-                                </div>
-                                <div className="card-body">
-                                    <p><strong>Number of Products Ordered: </strong>{quanityOfProductsInCart}</p>
-                                    <p><strong>Total Price: </strong>&#8377;{roundOffNum(totalPrice)}</p>
-                                    <p><strong>Discount : </strong>&#8377;{roundOffNum(totalDiscountedAmount)}</p>
-                                    <p><strong>Delivery Charge: </strong>&#8377;499</p>
-                                    <p><strong>Total Amount Paid: </strong>&#8377;{roundOffNum(totalAmountAfterDiscountPlusDeliveryCharges)}</p>
-                                    <p><strong>Address: </strong>{selectedAddress ? selectedAddress : "No address selected!"}</p>
-                                </div>    
-                            </div>
-                        )
-                    }
-                    
                 </div>
             </div>
         </main>
     );
 }
 
-
+function OrderSummary() {
+        const {orderSummary, orderSummaryStatus, setOrderSummaryStatus} = useProductContext();
+    return orderSummaryStatus && (
+        <div className="modal show fade d-block bg-dark bg-opacity-75" tabIndex="-1" role="dialog">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-header">     
+                        
+                        <h5 className="modal-title fs-5">Order Summary</h5>
+                    </div>
+                    <div className="modal-body">
+                        <p><strong>Number of Products Ordered: </strong>{orderSummary.quanityOfProductsInCart}</p>
+                        <p><strong>Total Price: </strong>&#8377;{roundOffNum(orderSummary.totalPrice)}</p>
+                        <p><strong>Discount : </strong>&#8377;{roundOffNum(orderSummary.totalDiscountedAmount)}</p>
+                        <p><strong>Delivery Charge: </strong>&#8377;499</p>
+                        <p><strong>Total Amount Paid: </strong>&#8377;{roundOffNum(orderSummary.totalAmountAfterDiscountPlusDeliveryCharges)}</p>
+                        <p><strong>Address: </strong>{orderSummary.selectedAddress ? orderSummary.selectedAddress : "No address selected!"}</p>
+                    </div>
+                    <div className="modal-footer">
+                        <button
+                            type="button"
+                            className="btn-close p-2 "
+                            onClick={() => setOrderSummaryStatus(false)}
+                        ></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        )
+}

@@ -7,7 +7,6 @@ const useProductContext = () => useContext(ProductContext);
 export default useProductContext;
 
 
-
 export function ProductProvider({children}) {
 
     const [productsData, setProductsData] = useState([]);
@@ -33,6 +32,9 @@ export function ProductProvider({children}) {
     // ----------------------------------------------------------------------
     const [selectedCategories, setSelectedCategories] = useState([]);
     // ----------------------------------------------------------------------
+    const [orderSummary, setOrderSummary] = useState({});
+    const [orderSummaryStatus, setOrderSummaryStatus] = useState(false);
+    // ----------------------------------------------------------------------
 
     useEffect(() => {
         async function fetchProducts() {
@@ -51,7 +53,6 @@ export function ProductProvider({children}) {
 
 // -------------------------------------------------------------------------------------------------
     useEffect(() => {
-        console.log("updatedProductsData:", productsData);
         setCartProducts(() => [...productsData.filter(e => e.isAddedToCart)])
         setIsInWishlist(() => [...productsData.filter(product => product.isAddedToWishlist)])
     }, [productsData])
@@ -170,10 +171,10 @@ export function ProductProvider({children}) {
     }
 
 
-    const noOfUniqueProductsInCart = productsData.filter(product => (product.isAddedToCart)).length;
-    const noOfProductsInWishlist = productsData.filter(product => product.isAddedToWishlist).length;
+    const noOfUniqueProductsInCart = cartProducts.length;
+    const noOfProductsInWishlist = wishlistProducts.length;
 
-    const quanityOfProductsInCart = productsData.reduce((acc, curr) => {
+    const quanityOfProductsInCart = cartProducts.reduce((acc, curr) => {
         if (curr.isAddedToCart) {
             acc += curr.quantity;
         }
@@ -215,7 +216,11 @@ export function ProductProvider({children}) {
             cartProducts,
             wishlistProducts,
             currentSize, 
-            setCurrentSize
+            setCurrentSize,
+            orderSummary,
+            setOrderSummary,
+            orderSummaryStatus, 
+            setOrderSummaryStatus
         }}>
             {children}
         </ProductContext.Provider>
