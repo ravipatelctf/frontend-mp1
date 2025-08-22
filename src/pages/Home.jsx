@@ -6,7 +6,7 @@ function CardImage({productCategory, imgUrl}) {
     const {selectedCategories, setSelectedCategories} = useProductContext();
 
     return (
-        <div className="col-md-4">
+        <div className="col-md-4 mb-4">
             <Link 
                 to="/products"
                 className="text-decoration-none"

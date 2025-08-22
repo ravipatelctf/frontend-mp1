@@ -230,8 +230,7 @@ export default function Cart() {
                                     <p><strong>Delivery Charge: </strong>&#8377;499</p>
                                     <p><strong>Total Amount Paid: </strong>&#8377;{roundOffNum(totalAmountAfterDiscountPlusDeliveryCharges)}</p>
                                     <p><strong>Address: </strong>{selectedAddress ? selectedAddress : "No address selected!"}</p>
-                                </div>
-                                        
+                                </div>    
                             </div>
                         )
                     }
@@ -241,3 +240,5 @@ export default function Cart() {
         </main>
     );
 }
+
+
