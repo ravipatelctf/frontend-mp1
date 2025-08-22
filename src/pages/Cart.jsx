@@ -9,7 +9,7 @@ import { roundOffNum } from "../components/atomicFunctions";
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
-    const {btnState, setBtnState, productSize, productQuantity, productsData, loading, error, sizeValue, handleAddRemoveProductInCart, handleAddRemoveProductInWishlist, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
+    const {cartProducts, handleRemoveFromCartProducts, handleAddToWishlistProducts, btnState, setBtnState, productSize, productQuantity, productsData, loading, error, sizeValue, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
     const [selectedAddress, setSelectedAddress] = useState("");
     const [placeOrderAddresses, setPlaceOrderAddresses] = useState([]);
     const [orderSummaryStatus, setOrderSummaryStatus] = useState(false);
@@ -29,8 +29,7 @@ export default function Cart() {
         loadData();
     }, []);
 
-    const productFoundInCart = productsData.find(product => product.isAddedToCart && !product.isAddedToWishlist)
-    if(!productFoundInCart) {
+    if(cartProducts.length <= 0) {
         return (
             <div className="mt-4">
                 <h1 className="text-center">MY CART ({noOfUniqueProductsInCart})</h1>
@@ -76,13 +75,12 @@ export default function Cart() {
                 toast.warn("Select an address to place order.")
                 return;
             }
-
-            const productsInCart = productsData.filter(product => product.isAddedToCart)
-            const productsArray = productsInCart.map(item => {
+            
+            const productsArray = cartProducts.map(item => {
                 return {
                     "product": item._id,
-                    "quantity": productQuantity[item._id],
-                    "size": productSize[item._id],
+                    "quantity": item.quantity,
+                    "size": item.size,
                 }
             })
             const newOrderObject = {
@@ -100,6 +98,9 @@ export default function Cart() {
             toast.error("Failed to place order!")
         }
     }   
+
+    // const cartProducts = productsData.filter((product) => product.isAddedToCart);
+
     // -------------------------------------------------------------------------------------
     return (
         <main className="container py-4">
@@ -107,7 +108,7 @@ export default function Cart() {
             <div className="row justify-content-between py-4">
                 <div className="col-lg-6 p-2">
                     <div>
-                        {(searchedProducts.length > 0 ? searchedProducts : productsData).map((product) => (product.isAddedToCart && !product.isAddedToWishlist) && (
+                        {(searchedProducts.length > 0 ? searchedProducts : cartProducts).map((product) => (
                             <div key={product._id} className="card mb-5">
 
                                 <div className="row">
@@ -140,7 +141,8 @@ export default function Cart() {
                                         <button 
                                             onClick={() => {
                                                 toast.success("Product removed from cart successfully.")
-                                                handleAddRemoveProductInCart(product._id, false)
+                                                handleRemoveFromCartProducts(product)
+                                                
                                             }} 
                                             className="w-100 btn btn-danger mb-1 fw-bold">
                                             Remove From Cart
@@ -148,7 +150,7 @@ export default function Cart() {
                                         <button 
                                             onClick={() => {
                                                 toast.success("Product moved to wishlist successfully.")
-                                                handleAddRemoveProductInWishlist(product._id, true)
+                                                handleAddToWishlistProducts(product)
                                             }}
                                             className="w-100 btn btn-secondary fw-bold">
                                             Move To Wishlist

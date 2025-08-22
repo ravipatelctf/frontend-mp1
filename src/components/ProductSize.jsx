@@ -1,49 +1,51 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useProductContext from "../contexts/ProductContext";
 import { toast } from "react-toastify";
 
 export function ProductSize({product}) {
     
-    const {productsData, setProductsData, productSize, setProductSize} = useProductContext();
+    const {productsData, setProductsData, currentSize, setCurrentSize} = useProductContext();
     const productId = product._id;
 
     // ------------------------------------------------------------
     // set a default size for each product when component mounts
-    useEffect(() => {
+    // useEffect(() => {
 
-        setProductSize((preValues) => {
-            return {
-                ...preValues,
-                [productId]: "S"
-            }
-        });
+    //     setProductSize((preValues) => {
+    //         return {
+    //             ...preValues,
+    //             [productId]: "S"
+    //         }
+    //     });
 
-    }, [])
+    // }, [])
     // -----------------------------------------------------------
 
     function handleSizeChange(size) {
                                   
         // --------------------------------------------
-        setProductSize((preValues) => (
-            {
-                ...preValues,
-                [productId]: size 
-            }
-        ))
+        // setProductSize((preValues) => (
+        //     {
+        //         ...preValues,
+        //         [productId]: size 
+        //     }
+        // ))
         // --------------------------------------------
         toast.info(`Size set ${size}`)
         // --------------------------------------------
-        const updatedProduct = productsData.map((curr) => {
-            if (curr._id !== product._id) {
-                return curr;
-            }
-            return {
-                ...curr,
-                size: size
-            }
-        })
-        setProductsData(updatedProduct)
+        const updatedProduct = (preValues) => {
+            return preValues.map((curr) => {
+                if (curr._id != product._id) {
+                    return curr;
+                }
+                return {
+                    ...curr,
+                    size: size
+                }
+            })
+        }
+        setProductsData((preValues) => updatedProduct(preValues))
         // --------------------------------------------
     }
    
@@ -57,8 +59,11 @@ export function ProductSize({product}) {
                             key={size} 
                             type="button" 
                             name={size}
-                            className={`ms-1 btn btn-outline-primary btn-sm text-secondary fw-bold ${productSize && productSize[productId] === size ? "active text-white" : "text-secondary"} `} 
-                            onClick={() => handleSizeChange(size)}>
+                            className={`ms-1 btn btn-outline-primary btn-sm text-secondary fw-bold ${currentSize === size ? "active text-white" : "text-secondary"} `} 
+                            onClick={() => {
+                                setCurrentSize(size)
+                                handleSizeChange(size)
+                            }}>
                         {size}
                         </button>
                     ))

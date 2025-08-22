@@ -1,7 +1,8 @@
-import useProductContext from "../contexts/ProductContext";
+
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import useProductContext from "../contexts/ProductContext";
 
 export default function ProductCard({product}) {   
     return (
@@ -15,7 +16,7 @@ export default function ProductCard({product}) {
     );
 }
 
-function CardContent({product}) {
+export function CardContent({product}) {
     return (
         <Link to={`/products/${product._id}`} className="text-decoration-none text-black">
             <CardImage product={product} />
@@ -24,7 +25,7 @@ function CardContent({product}) {
     );
 }
 
-function CardImage({product}) {
+export function CardImage({product}) {
     return (
         <img 
             src={`${product.imageUrl}?&w=400&h=400&fit=crop`}
@@ -34,7 +35,7 @@ function CardImage({product}) {
     );
 }
 
-function CardBody({product}) {
+export function CardBody({product}) {
     return (
         <div className="card-body text-center">
             <p>
@@ -47,45 +48,48 @@ function CardBody({product}) {
     );
 }
 
-function ButtonWishlist({product}) {
-    const {handleAddRemoveProductInWishlist} = useProductContext();
+export function ButtonWishlist({product}) {
+
+    const {handleAddToWishlistProducts} = useProductContext();
     const [isInWishlist, setIsInWishlist] = useState(false);
     return !isInWishlist ? (
         <button
             onClick={() => {
-                setIsInWishlist(true)
                 toast.success("Product added to wishlist successfully.")
-                handleAddRemoveProductInWishlist(product._id, true)
-            }} 
-            className="p-2 bg-secondary border text-light text-center text-decoration-none">
+                handleAddToWishlistProducts(product)
+                setIsInWishlist(true)   
+            }}
+            className="p-2 btn btn-secondary mb-1 mx-1">
             Add To WishList
         </button>
         ) : (
         <Link 
             to="/wishlist"
-            className="p-2 bg-secondary border text-light text-center text-decoration-none">
+            className="p-2 btn btn-secondary mb-1 mx-1">
             Go To WishList
         </Link>       
     )
 }
 
-function ButtonCart({product}) {
-    const {handleAddRemoveProductInCart} = useProductContext();
+export function ButtonCart({product}) {
+
+    const {handleAddToCartProducts} = useProductContext();
     const [isInCart, setIsInCart] = useState(false);
+
     return !isInCart ? (
         <button 
             onClick={() => {
-                setIsInCart(true)
                 toast.success("Product added to cart successfully.")
-                handleAddRemoveProductInCart(product._id, true)
+                setIsInCart(true)
+                handleAddToCartProducts(product)
             }} 
-            className="p-2 bg-primary border text-light text-center text-decoration-none">
+            className="p-2 btn btn-primary mb-1 mx-1">
             Add To Cart
         </button>
         ) : (
             <Link 
                 to="/cart"
-                className="p-2 bg-primary border text-light text-center text-decoration-none">
+                className="p-2 btn btn-primary mb-1 mx-1">
                 Go To Cart
             </Link>
         );

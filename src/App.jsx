@@ -29,7 +29,7 @@ export default function App() {
         <Footer />
     </Router>
     </ProductProvider>
-    <ToastContainer position="top-left" autoClose={2000} />
+    <ToastContainer position="top-right" autoClose={1000} />
     </>
   );
 }

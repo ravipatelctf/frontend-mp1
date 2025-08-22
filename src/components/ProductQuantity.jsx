@@ -8,7 +8,6 @@ export function ProductQuantity({product}) {
     const {btnState, setBtnState, productsData, setProductsData, productQuantity, setProductQuantity} = useProductContext();
     
     const productId = product._id;
-
     // ----------------------------------------------------------------------
     // set a default value for quantity on initial mount of component
     useEffect(() => {
@@ -25,49 +24,54 @@ export function ProductQuantity({product}) {
     function handleIncrementProductQuantity() {
         // --------------------------------------------
         // const productId = product._id;
-        setProductQuantity((preValues) => (
-            {
-                ...preValues,
-                [productId]: product.quantity + 1,
-            }
-        ))
+        // setProductQuantity((preValues) => (
+        //     {
+        //         ...preValues,
+        //         [productId]: product.quantity + 1,
+        //     }
+        // ))
         // --------------------------------------------
 
-        const updatedProduct = productsData.map((curr) => {
-            if (curr._id != product._id) {
-                return curr;
-            }
-            return {
-                ...curr,
-                quantity: product.quantity + 1
-            }
-        })
-        setProductsData(updatedProduct)
+        const updatedProduct = (preValues) => {
+            return preValues.map((curr) => {
+                if (curr._id != product._id) {
+                    return curr;
+                }
+                return {
+                    ...curr,
+                    quantity: product.quantity + 1
+                }
+            })
+        }
+        setProductsData((preValues) => updatedProduct(preValues))
     }
 
     function handleDecrementProductQuantity() {
         
         // --------------------------------------------
         // const productId = product._id;
-        setProductQuantity((preValues) => (
-            {
-                ...preValues,
-                [productId]: product.quantity - 1,
-            }
-        ))
+        // setProductQuantity((preValues) => (
+        //     {
+        //         ...preValues,
+        //         [productId]: product.quantity - 1,
+        //     }
+        // ))
         // --------------------------------------------
 
-        const updatedProduct = productsData.map((curr) => {
-            if (curr._id != product._id) {
-                return curr;
-            }
-            return {
-                ...curr,
-                quantity: product.quantity - 1
-            }
-        })
-        setProductsData(updatedProduct)
+        const updatedProduct = (preValues) => {
+            return preValues.map((curr) => {
+                if (curr._id != product._id) {
+                    return curr;
+                }
+                return {
+                    ...curr,
+                    quantity: product.quantity - 1
+                }
+            })
+        }
+        setProductsData((preValues) => updatedProduct(preValues))
     }
+
     return (
         <div>
             <p><strong  className="me-2">Quantity:</strong>        

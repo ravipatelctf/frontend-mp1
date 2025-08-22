@@ -6,16 +6,17 @@ import useProductContext from "../contexts/ProductContext";
 import {ProductQuantity} from "../components/ProductQuantity";
 import {ProductSize} from "../components/ProductSize";
 import { toast } from "react-toastify";
+// import {ButtonCart, ButtonWishlist} from "../components/ProductCard";
 
 function ButtonWishlist({product}) {
-    const {handleAddRemoveProductInWishlist} = useProductContext();
+    const {handleAddToWishlistProducts} = useProductContext();
     const [isInWishlist, setIsInWishlist] = useState(false);
     return !isInWishlist ? (
         <button
             onClick={() => {
                 toast.success("Product added to wishlist successfully.")
                 setIsInWishlist(true)
-                handleAddRemoveProductInWishlist(product._id, true)
+                handleAddToWishlistProducts(product)
             }} 
             className="w-100 p-2 btn btn-secondary mb-1">
             Add To WishList
@@ -30,14 +31,14 @@ function ButtonWishlist({product}) {
 }
 
 function ButtonCart({product}) {
-    const {handleAddRemoveProductInCart} = useProductContext();
+    const {handleDetailsPageAddToCartProducts} = useProductContext();
     const [isInCart, setIsInCart] = useState(false);
     return !isInCart ? (
         <button 
             onClick={() => {
                 toast.success("Product added to cart successfully.")
                 setIsInCart(true)
-                handleAddRemoveProductInCart(product._id, true)
+                handleDetailsPageAddToCartProducts(product)
             }} 
             className="w-100 p-2 btn btn-primary">
             Add To Cart

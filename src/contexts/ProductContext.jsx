@@ -16,6 +16,12 @@ export function ProductProvider({children}) {
     const [address, setAddresses] = useState([]);
 
     // ---------------------------------------------------------------------
+
+    const [cartProducts, setCartProducts] = useState([]);
+    const [wishlistProducts, setIsInWishlist] = useState([]);
+    // ---------------------------------------------------------------------
+    const [currentSize, setCurrentSize] = useState("S");
+    // ---------------------------------------------------------------------
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
@@ -43,7 +49,112 @@ export function ProductProvider({children}) {
         fetchProducts();
     }, []);
 
-    // ----------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
+    useEffect(() => {
+        console.log("updatedProductsData:", productsData);
+        setCartProducts(() => [...productsData.filter(e => e.isAddedToCart)])
+        setIsInWishlist(() => [...productsData.filter(product => product.isAddedToWishlist)])
+    }, [productsData])
+
+
+    function handleDetailsPageAddToCartProducts(product) {
+        
+        const newProducts = (preValues) => { 
+            return preValues.map((item) => {
+                if (item._id !== product._id) {
+                    return item;
+                }
+
+                return {
+                    ...item,
+                    isAddedToCart: true,
+                }
+            });
+        }
+        setProductsData((preValues) => newProducts(preValues));
+    }
+
+    function handleAddToCartProducts(product) {
+        
+        const newProducts = (preValues) => { 
+            return preValues.map((item) => {
+                if (item._id !== product._id) {
+                    return item;
+                }
+
+                if (item.isAddedToCart === true){
+                    return {
+                        ...item,
+                        
+                        quantity: item.quantity + 1   
+                    }
+                }
+
+                return {
+                    ...item,
+                    isAddedToCart: true,
+                }
+            });
+        }
+        setProductsData((preValues) => newProducts(preValues));
+    }
+
+    function handleRemoveFromCartProducts(product) {
+        
+        const newProducts = (preValues) => { 
+            return preValues.map((item) => {
+                if (item._id !== product._id) {
+                    return item;
+                }
+
+                if (item.isAddedToCart === true){
+                    return {
+                        ...item,
+                        isAddedToCart: false,
+                        quantity: 1   
+                    }
+                }
+            });
+        }
+        setProductsData((preValues) => newProducts(preValues));
+    }
+
+    function handleAddToWishlistProducts(product) {
+        
+        const newProducts = (preValues) => { 
+            return preValues.map((item) => {
+                if (item._id !== product._id) {
+                    return item;
+                }
+
+                return {
+                    ...item,
+                    isAddedToWishlist: true,
+                }
+            });
+        }
+        setProductsData((preValues) => newProducts(preValues));
+    }
+
+    function handleRemoveFromWishlistProducts(product) {
+        
+        const newProducts = (preValues) => { 
+            return preValues.map((item) => {
+                if (item._id !== product._id) {
+                    return item;
+                }
+
+                return {
+                    ...item,
+                    isAddedToWishlist: false,
+                }
+            });
+        }
+        setProductsData((preValues) => newProducts(preValues));
+    }
+
+// ---------------------------------------------------------------------------------------------------
+
     function handleCategory(event) {
         const {checked, value} = event.target;
         if (checked) {
@@ -58,59 +169,8 @@ export function ProductProvider({children}) {
         setSearchedProducts(productsData.filter(product => product.name.toLowerCase().includes(event.target.value)));
     }
 
-    function handleAddRemoveProductInCart(productId, isAddedToCartValue) {
 
-        const updatedData = (preValues) => {
-            return preValues.map((product) => {
-                if (product._id != productId) {
-                    return product;
-                } 
-
-                if (isAddedToCartValue) {
-                   return {
-                    ...product,
-                    quantity: (product.quantity || 0) + 1,
-                    isAddedToCart: true,
-                   };
-                }
-
-                return {
-                    ...product,
-                    quantity: 0,
-                    isAddedToCart: false
-
-                }
-            });
-        }   
-
-        updateData(productId, {
-            isAddedToCart: isAddedToCartValue,
-            quantity: isAddedToCartValue ? undefined : 0
-        });
-        setProductsData((preValues) => updatedData(preValues));
-    }
-
-    function handleAddRemoveProductInWishlist(productId, isAddedToWishlistValue) {
-        
-        updateData(productId, {isAddedToWishlist: isAddedToWishlistValue});
-
-        const updatedData = (preValues) => {
-            return preValues.map((product) => {
-                if (product._id != productId) {
-                    return product;
-                } 
-                return {
-                    ...product,
-                    isAddedToWishlist: isAddedToWishlistValue
-                }
-            });
-        }
-
-        setProductsData((preValues) => updatedData(preValues));   
-    }
-
-
-    const noOfUniqueProductsInCart = productsData.filter(product => (product.isAddedToCart && !product.isAddedToWishlist)).length;
+    const noOfUniqueProductsInCart = productsData.filter(product => (product.isAddedToCart)).length;
     const noOfProductsInWishlist = productsData.filter(product => product.isAddedToWishlist).length;
 
     const quanityOfProductsInCart = productsData.reduce((acc, curr) => {
@@ -136,16 +196,26 @@ export function ProductProvider({children}) {
             setProductsData, 
             sizeValue, 
             setSizeValue, 
-            handleAddRemoveProductInCart, 
+             
             noOfUniqueProductsInCart, 
             quanityOfProductsInCart, 
-            handleAddRemoveProductInWishlist, 
+            
             noOfProductsInWishlist, 
             searchedProducts, 
             handleSearch, 
             selectedCategories, 
             setSelectedCategories,
-            handleCategory    
+            handleCategory,
+            
+            handleAddToCartProducts,
+            handleRemoveFromCartProducts,
+            handleAddToWishlistProducts,
+            handleRemoveFromWishlistProducts,
+            handleDetailsPageAddToCartProducts,
+            cartProducts,
+            wishlistProducts,
+            currentSize, 
+            setCurrentSize
         }}>
             {children}
         </ProductContext.Provider>

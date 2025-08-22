@@ -1,8 +1,9 @@
 import useProductContext from "../contexts/ProductContext";
 import { toast } from "react-toastify";
+// import ProductCard from "../components/ProductCard";
 
 function ProductCard({product}) {
-    const {handleAddRemoveProductInCart, handleAddRemoveProductInWishlist} = useProductContext();
+    const {handleAddToCartProducts, handleRemoveFromWishlistProducts} = useProductContext();
 
     return (
             <div key={product._id} className="col-md-3 my-3">       
@@ -18,9 +19,8 @@ function ProductCard({product}) {
                         </div>
                     <button 
                         onClick={() => {
-                            toast.success("Product removed from cart successfully.")
-                            handleAddRemoveProductInCart(product._id, true);
-                            handleAddRemoveProductInWishlist(product._id, false);
+                            toast.success("Product moved to cart successfully.")
+                            handleAddToCartProducts(product)    
                         }} 
                         className="p-2 bg-primary border text-light text-center text-decoration-none">
                         Move To Cart
@@ -28,8 +28,7 @@ function ProductCard({product}) {
                     <button 
                         onClick={() => {
                             toast.success("Product removed from wishlist successfully.")
-                            handleAddRemoveProductInCart(product._id, false);
-                            handleAddRemoveProductInWishlist(product._id, false)
+                            handleRemoveFromWishlistProducts(product)     
                         }} 
                         className="p-2 bg-secondary border text-light text-center text-decoration-none">
                         Remove from Wishlist
@@ -40,7 +39,7 @@ function ProductCard({product}) {
 }
 
 export default function Wishlist() {
-    const {productsData, loading, error} = useProductContext();
+    const {wishlistProducts, loading, error} = useProductContext();
 
     if (loading) {
         return <p className="text-center">Loading...</p>
@@ -50,13 +49,11 @@ export default function Wishlist() {
         return <p className="text-center">Error occurred...</p>
     }
 
-    const wishlistProducts = productsData.filter(product => product.isAddedToWishlist);
-
     return (
         <main className="container">
             <h1 className="text-center py-4">Wishlist page</h1>
             <div className="row">
-                {wishlistProducts.length > 0 ? (wishlistProducts.map((product) => (
+                {wishlistProducts ? (wishlistProducts.map((product) => (
                     <ProductCard key={product._id} product={product} />
                     )
                 )) : (
