@@ -9,7 +9,7 @@ export function UserProvider({children}) {
     const [user, setUser] = useState();
     const [addresses, setAddresses] = useState([]);
     const [orders, setOrders] = useState([]);
-
+    const [orderedProducts, setOrderedProducts] = useState([]);
     // -----------------------------------------------------------------------------------
     // fetch the user once when the component mounts
     useEffect(() => {
@@ -20,19 +20,21 @@ export function UserProvider({children}) {
                 setUser(data);
                 setAddresses(data.addresses);
                 setOrders(data.orders);
+                const productsArray = data.orders.map(order => order.products)
+                setOrderedProducts(productsArray)
             } catch (error) {
                 throw error;
             }
         }
 
         fetchUser();
-    }, []);
+    }, [user]);
 
     if (!user) {
         return <p className="text-center">Loading...</p>
     }
     return (
-        <UserContext.Provider value={{user, addresses, setUser, setAddresses, orders}} >
+        <UserContext.Provider value={{orderedProducts, user, addresses, setUser, setAddresses, orders}} >
             {children}
         </UserContext.Provider>
     );

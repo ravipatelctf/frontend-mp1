@@ -5,33 +5,11 @@ import { toast } from "react-toastify";
 
 export function ProductSize({product}) {
     
-    const {productsData, setProductsData, currentSize, setCurrentSize} = useProductContext();
-    const productId = product._id;
-
-    // ------------------------------------------------------------
-    // set a default size for each product when component mounts
-    // useEffect(() => {
-
-    //     setProductSize((preValues) => {
-    //         return {
-    //             ...preValues,
-    //             [productId]: "S"
-    //         }
-    //     });
-
-    // }, [])
-    // -----------------------------------------------------------
+    const {productsData, setProductsData} = useProductContext();
+    const [currentSize, setCurrentSize] = useState("S");
 
     function handleSizeChange(size) {
                                   
-        // --------------------------------------------
-        // setProductSize((preValues) => (
-        //     {
-        //         ...preValues,
-        //         [productId]: size 
-        //     }
-        // ))
-        // --------------------------------------------
         toast.info(`Size set ${size}`)
         // --------------------------------------------
         const updatedProduct = (preValues) => {
@@ -48,7 +26,6 @@ export function ProductSize({product}) {
         setProductsData((preValues) => updatedProduct(preValues))
         // --------------------------------------------
     }
-   
     return (
         <div className="d-flex align-items-center gap-2 justify-content-start">
             <label className="fw-bold">Size:</label>

@@ -2,11 +2,11 @@
 import { useState } from "react";
 import {toast} from "react-toastify";
 import { useUserContext } from "../../contexts/UserContext";
-import { ProductCard } from "./ProductCard";
 import { roundOffNum } from "../atomicFunctions";
+import { Link } from "react-router-dom";
 
 export function OrdersHistoryManagementCard() {
-    const {orders} = useUserContext();
+    const {orders, orderedProducts} = useUserContext();
     const [orderStatus, setOrderStatus] = useState(false);
 
     function handleOrderStatus() {
@@ -28,27 +28,77 @@ export function OrdersHistoryManagementCard() {
                     {orderStatus ? "Hide Order History" : "See Order History"}
                 </button>
                 
-                <ul className="list-group py-4">
+                <div className="row py-4 mx-1 mb-2">
                     {orderStatus &&  orders?.map(order => (
                        
-                        <li key={order._id} className="list-group-item">
-                            <p><strong>Number of Products Ordered: </strong>{order.products.length}</p>
-                            <p><strong>Total Price: </strong>&#8377;{roundOffNum(order.totalPrice)}</p>
-                            <p><strong>Discount : </strong>&#8377;{roundOffNum(order.discount)}</p>
-                            <p><strong>Delivery Charge: </strong>&#8377;{roundOffNum(order.deliveryCharge)}</p>
-                            <p><strong>Total Amount Paid: </strong>&#8377;{roundOffNum(order.totalPrice - order.discount + order.deliveryCharge)}</p>
-                            <p><strong>Address: </strong>{order.address}</p>
+                        <div key={order._id} className="card p-4 mb-4">
+
                             <div className="row">
+                                <div className="col-md-4 my-2">
+                                    <p><strong>Number of Products Ordered: </strong>{order.products.length}</p>
+                                    <p><strong>Total Price: </strong>&#8377;{roundOffNum(order.totalPrice)}</p>
+                                    <p><strong>Discount : </strong>&#8377;{roundOffNum(order.discount)}</p>
+                                    <p><strong>Delivery Charge: </strong>&#8377;{roundOffNum(order.deliveryCharge)}</p>
+                                    <p><strong>Total Amount Paid: </strong>&#8377;{roundOffNum(order.totalPrice - order.discount + order.deliveryCharge)}</p>
+                                    <p><strong>Address: </strong>{order.address}</p>
+                                </div>                     
                                 {
                                     order.products.map((item) => (
-                                        <ProductCard key={item.product._id} product={item.product} />
+                                        <ProductCard key={item.product._id} product={item.product} item={item} />
                                     ))
                                 }
                             </div>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             </div>
         </>
     )
+}
+
+// ----------------------------------------------------------------------
+// product card components
+
+export function ProductCard({product, item}) {   
+    return (
+        <div className="col-md-4 my-2">       
+            <div className="card">
+                <CardContent product={product} item={item} />
+            </div>           
+        </div>
+    );
+}
+
+function CardContent({product, item}) {
+    return (
+        <Link to={`/products/${product._id}`} className="text-decoration-none text-black">
+            <CardImage product={product} />
+            <CardBody product={product} item={item} />
+        </Link>
+    );
+}
+
+function CardImage({product}) {
+    return (
+        <img 
+            src={`${product.imageUrl}?&w=400&h=400&fit=crop`}
+            alt={product.imageAlt} 
+            className="img-fluid rounded-top"
+        />
+    );
+}
+
+function CardBody({product, item}) {
+    return (
+        <div className="card-body text-center">
+            <p>
+                <span className="fw-bold">{product.name.slice(0, 28)}</span>
+            </p>
+            <p className="fw-bold"> &#8377;{product.price}</p>
+            <p>
+                <span>Size: <strong>{item.size}</strong> | </span>
+                <span>Quantity: <strong>{item.quantity}</strong></span>
+            </p>
+        </div>
+    );
 }

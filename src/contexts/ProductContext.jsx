@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getData, updateData } from "../data";
-import { toast } from "react-toastify";
 
 const ProductContext = createContext();
 const useProductContext = () => useContext(ProductContext);
@@ -18,8 +17,6 @@ export function ProductProvider({children}) {
 
     const [cartProducts, setCartProducts] = useState([]);
     const [wishlistProducts, setIsInWishlist] = useState([]);
-    // ---------------------------------------------------------------------
-    const [currentSize, setCurrentSize] = useState("S");
     // ---------------------------------------------------------------------
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -55,6 +52,7 @@ export function ProductProvider({children}) {
     useEffect(() => {
         setCartProducts(() => [...productsData.filter(e => e.isAddedToCart)])
         setIsInWishlist(() => [...productsData.filter(product => product.isAddedToWishlist)])
+        console.log(("productsData:", productsData))
     }, [productsData])
 
 
@@ -215,8 +213,7 @@ export function ProductProvider({children}) {
             handleDetailsPageAddToCartProducts,
             cartProducts,
             wishlistProducts,
-            currentSize, 
-            setCurrentSize,
+            
             orderSummary,
             setOrderSummary,
             orderSummaryStatus, 
