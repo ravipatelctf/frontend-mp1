@@ -9,9 +9,7 @@ import { roundOffNum } from "../components/atomicFunctions";
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
-    const {orderSummaryStatus, setOrderSummaryStatus, orderSummary, setOrderSummary, cartProducts, handleRemoveFromCartProducts, handleAddToWishlistProducts, btnState, setBtnState, productSize, productQuantity, productsData, loading, error, sizeValue, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
-    const [selectedAddress, setSelectedAddress] = useState("");
-    const [placeOrderAddresses, setPlaceOrderAddresses] = useState([]);
+    const {placeOrderAddresses, setPlaceOrderAddresses, selectedAddress, setSelectedAddress, orderSummaryStatus, setOrderSummaryStatus, orderSummary, setOrderSummary, cartProducts, handleRemoveFromCartProducts, handleAddToWishlistProducts, btnState, setBtnState, productSize, productQuantity, productsData, loading, error, sizeValue, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
     
     // -----------------------------------------------------------------------------------
 
@@ -91,6 +89,7 @@ export default function Cart() {
             console.log("newOrderObject:", newOrderObject)
             await createNewOrder(newOrderObject)
             toast.success("Order placed successfully.");
+            setSelectedAddress("")
         } catch (error) {
             toast.error("Failed to place order!")
         }
@@ -108,7 +107,7 @@ export default function Cart() {
     // -------------------------------------------------------------------------------------
     return (
         <main className="container py-4">
-            <OrderSummary />
+            <OrderSummary orderSummaryObj={orderSummaryObj} handlePlaceOrder={handlePlaceOrder} />
             <h1 className="text-center">MY CART ({noOfUniqueProductsInCart})</h1>
             <div className="row justify-content-between py-4">
                 <div className="col-lg-6 p-2">
@@ -193,22 +192,6 @@ export default function Cart() {
                         <p>You will save &#8377;{savedAmount} on this order </p>
 
                         <div>
-                            <select 
-                                onChange={(event) => setSelectedAddress(event.target.value)} 
-                                name="address" 
-                                id="address" 
-                                className="form-select fw-bold mb-1"
-                                defaultValue={selectedAddress}
-                            >
-                                <option value="" disabled>Select Address</option>
-                                {
-                                    placeOrderAddresses?.map(e => (
-                                        <option key={e._id} value={e.address}>{e.address}</option>
-                                    ))
-                                }
-                                
-                                
-                            </select>
                             <button
                                 type="button"
                                 className={`btn ${quanityOfProductsInCart <= 0 ? "btn-secondary fw-bold mt-2 w-100 py-2" : "btn-success fw-bold mt-2 w-100 py-2"}`}
@@ -216,7 +199,7 @@ export default function Cart() {
                                 onClick={() => {
                                     setOrderSummary(orderSummaryObj)
                                     setOrderSummaryStatus(true);
-                                    handlePlaceOrder()
+                                    
                                 }}  
                             >
                                 PLACE ORDER
@@ -229,15 +212,19 @@ export default function Cart() {
     );
 }
 
-function OrderSummary() {
-        const {orderSummary, orderSummaryStatus, setOrderSummaryStatus} = useProductContext();
+function OrderSummary({orderSummaryObj, handlePlaceOrder}) {
+        const {quanityOfProductsInCart, orderSummary, setOrderSummary, orderSummaryStatus, setOrderSummaryStatus, selectedAddress, setSelectedAddress, placeOrderAddresses, setPlaceOrderAddresses} = useProductContext();
     return orderSummaryStatus && (
         <div className="modal show fade d-block bg-dark bg-opacity-75" tabIndex="-1" role="dialog">
             <div className="modal-dialog">
                 <div className="modal-content">
-                    <div className="modal-header">     
-                        
+                    <div className="modal-header ">     
                         <h5 className="modal-title fs-5">Order Summary</h5>
+                        <button
+                            type="button"
+                            className="btn-close p-2 "
+                            onClick={() => setOrderSummaryStatus(false)}
+                        ></button>
                     </div>
                     <div className="modal-body">
                         <p><strong>Number of Products Ordered: </strong>{orderSummary.quanityOfProductsInCart}</p>
@@ -248,11 +235,33 @@ function OrderSummary() {
                         <p><strong>Address: </strong>{orderSummary.selectedAddress ? orderSummary.selectedAddress : "No address selected!"}</p>
                     </div>
                     <div className="modal-footer">
+                        <select 
+                            onChange={(event) => setSelectedAddress(event.target.value)} 
+                            name="address" 
+                            id="address" 
+                            className="form-select fw-bold mb-1"
+                            defaultValue={selectedAddress}
+                        >
+                            <option value="" disabled>Select Address</option>
+                            {
+                                placeOrderAddresses?.map(e => (
+                                    <option key={e._id} value={e.address}>{e.address}</option>
+                                ))
+                            }
+                        </select>
+
                         <button
                             type="button"
-                            className="btn-close p-2 "
-                            onClick={() => setOrderSummaryStatus(false)}
-                        ></button>
+                            className={`btn ${quanityOfProductsInCart <= 0 ? "btn-secondary fw-bold mt-2 w-100 py-2" : "btn-success fw-bold mt-2 w-100 py-2"}`}
+                            disabled={quanityOfProductsInCart <= 0}
+                            onClick={() => {
+                                setOrderSummary(orderSummaryObj)
+                                setOrderSummaryStatus(true);
+                                handlePlaceOrder()
+                            }}  
+                        >
+                            PLACE ORDER
+                        </button>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { getData, updateData } from "../data";
 import { toast } from "react-toastify";
 
+
 const ProductContext = createContext();
 const useProductContext = () => useContext(ProductContext);
 export default useProductContext;
@@ -11,7 +12,6 @@ export function ProductProvider({children}) {
 
     const [productsData, setProductsData] = useState([]);
     const [searchedProducts, setSearchedProducts] = useState([]);
-    const [sizeValue, setSizeValue] = useState(null);
     const [address, setAddresses] = useState([]);
 
     // ---------------------------------------------------------------------
@@ -28,7 +28,8 @@ export function ProductProvider({children}) {
 
     const [btnState, setBtnState] = useState(null);
     // ----------------------------------------------------------------------
-    
+    const [selectedAddress, setSelectedAddress] = useState("");
+    const [placeOrderAddresses, setPlaceOrderAddresses] = useState([]);
     // ----------------------------------------------------------------------
     const [selectedCategories, setSelectedCategories] = useState([]);
     // ----------------------------------------------------------------------
@@ -246,8 +247,6 @@ export function ProductProvider({children}) {
             error, 
             productsData, 
             setProductsData, 
-            sizeValue, 
-            setSizeValue,
             currentSize, 
             setCurrentSize,
             handleSizeChange,
@@ -272,7 +271,12 @@ export function ProductProvider({children}) {
             orderSummary,
             setOrderSummary,
             orderSummaryStatus, 
-            setOrderSummaryStatus
+            setOrderSummaryStatus,
+
+            selectedAddress, 
+            setSelectedAddress,
+            placeOrderAddresses, 
+            setPlaceOrderAddresses
         }}>
             {children}
         </ProductContext.Provider>
