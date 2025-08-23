@@ -17,13 +17,13 @@ function ButtonWishlist({product}) {
                 setIsInWishlist(true)
                 handleAddToWishlistProducts(product)
             }} 
-            className="w-100 p-2 btn btn-secondary mb-1">
+            className="w-100 p-2 fw-bold btn btn-secondary mb-1">
             Add To WishList
         </button>
         ) : (
         <Link 
             to="/wishlist"
-            className="w-100 p-2 btn btn-secondary mb-1">
+            className="w-100 p-2 fw-bold btn btn-secondary mb-1">
             Go To WishList
         </Link>       
     )
@@ -39,13 +39,13 @@ function ButtonCart({product}) {
                 setIsInCart(true)
                 handleDetailsPageAddToCartProducts(product)
             }} 
-            className="w-100 p-2 btn btn-primary">
+            className="w-100 p-2 fw-bold btn btn-primary mb-1">
             Add To Cart
         </button>
         ) : (
             <Link 
                 to="/cart"
-                className="w-100 p-2 btn btn-primary">
+                className="w-100 p-2 fw-bold btn btn-primary mb-1">
                 Go To Cart
             </Link>
         );
@@ -55,18 +55,16 @@ function ButtonCart({product}) {
 export default function ProductDetails() {
     const {productId} = useParams();
     const {loading, error, productsData} = useProductContext();
-    console.log("loading:", loading);
 
     if (loading) {
         return <p className="text-center">Loading...</p>
     }
-    console.log("error:", error);
+
     if (error) {
         return <p className="text-center">Error occurred...</p>
     }
     
-    const targetProduct = productsData.find((product) => product._id === productId);
-    console.log("targetProduct:", targetProduct);
+    const targetProduct = productsData.find((product) => product && product._id === productId);
     const discountedPrice = Number(((targetProduct.price)- (targetProduct.price * targetProduct.discountPercentage * 0.01)).toFixed(2));
 
     return (
@@ -77,7 +75,7 @@ export default function ProductDetails() {
                     <img 
                         src={`${targetProduct.imageUrl}?&w=400&h=400&fit=crop`} 
                         alt={targetProduct.imageAlt} 
-                        className="img-fluid mb-1" 
+                        className="img-fluid mb-1 rounded" 
                     />
                     
                     <ButtonWishlist product={targetProduct} />

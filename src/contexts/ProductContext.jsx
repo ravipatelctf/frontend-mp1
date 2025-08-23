@@ -65,14 +65,12 @@ export function ProductProvider({children}) {
             setLoading(false)
             setError(true)
         }
-        console.log("storedData:", storedData)
-        console.log("productsData:", productsData)
     }, []);
     
     // -------------------------------------------------------------------------------------------------
     useEffect(() => {
-        setCartProducts(() => [...productsData.filter(e => e.isAddedToCart)])
-        setIsInWishlist(() => [...productsData.filter(product => product.isAddedToWishlist)])
+        setCartProducts(() => [...productsData.filter(product => product && product.isAddedToCart)])
+        setIsInWishlist(() => [...productsData.filter(product => product && product.isAddedToWishlist)])
 
         localStorage.setItem("dataOfProducts", JSON.stringify(productsData));
     }, [productsData])

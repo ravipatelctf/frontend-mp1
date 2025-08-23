@@ -63,17 +63,17 @@ export default function Products() {
                         <div className="mb-4">
                             <p className="fw-bold mb-2">Category</p>
                             <label htmlFor="Men">
-                                <input type="checkbox" checked={selectedCategories.includes("Men") ? true : false} name="Men" id="Men" value="Men" className="me-1" onChange={(event) => handleCategory(event)} />
+                                <input type="checkbox" checked={selectedCategories.includes("Men") ? true : false} id="Men" value="Men" className="me-1" onChange={(event) => handleCategory(event)} />
                                 Men's clothing
                             </label>
                             <br />
-                            <label htmlFor="Men">
-                                <input type="checkbox" checked={selectedCategories.includes("Women") ? true : false} name="Men" id="Men" value="Women" className="me-1" onChange={(event) => handleCategory(event)} />
+                            <label htmlFor="Women">
+                                <input type="checkbox" checked={selectedCategories.includes("Women") ? true : false} id="Women" value="Women" className="me-1" onChange={(event) => handleCategory(event)} />
                                 Women's clothing
                             </label>
                             <br />
-                            <label htmlFor="Men">
-                                <input type="checkbox" checked={selectedCategories.includes("Kids") ? true : false} name="Men" id="Men" value="Kids" className="me-1" onChange={(event) => handleCategory(event)} />
+                            <label htmlFor="Kids">
+                                <input type="checkbox" checked={selectedCategories.includes("Kids") ? true : false} id="Kids" value="Kids" className="me-1" onChange={(event) => handleCategory(event)} />
                                 Kids' clothing
                             </label>
                         </div>
@@ -97,8 +97,7 @@ export default function Products() {
                             <p className="fw-bold">Sort by</p>
                             <label htmlFor="lowToHigh">
                                 <input 
-                                    type="radio" 
-                                    name="sort" 
+                                    type="radio"  
                                     className="me-1" 
                                     id="lowToHigh"
                                     value="lowToHigh"
@@ -110,8 +109,7 @@ export default function Products() {
                             <br />
                             <label htmlFor="highToLow">
                                 <input 
-                                    type="radio" 
-                                    name="sort" 
+                                    type="radio"  
                                     className="me-1" 
                                     id="highToLow"
                                     value="highToLow"
@@ -129,7 +127,7 @@ export default function Products() {
                             <span className="fw-bold fs-5">Showing All Products</span>
                             <span className="ms-2">( showing {filteredProducts.length} products )</span>
                         </p>
-                        {(searchedProducts.length > 0 ? searchedProducts : filteredProducts).map((product) => (
+                        {(searchedProducts.length > 0 ? searchedProducts : filteredProducts).map((product) => product && (
                             <ProductCard key={product._id} product={product} />
                         ))}
                     </div>

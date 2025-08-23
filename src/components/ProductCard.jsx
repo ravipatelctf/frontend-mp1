@@ -30,7 +30,7 @@ export function CardImage({product}) {
         <img 
             src={`${product.imageUrl}?&w=400&h=400&fit=crop`}
             alt={product.imageAlt} 
-            className="img-fluid"
+            className="img-fluid rounded-top"
         />
     );
 }
@@ -59,13 +59,13 @@ export function ButtonWishlist({product}) {
                 handleAddToWishlistProducts(product)
                 setIsInWishlist(true)   
             }}
-            className="p-2 btn btn-secondary mb-1 mx-1">
+            className="p-2 fw-bold btn btn-secondary mb-1 mx-1">
             Add To WishList
         </button>
         ) : (
         <Link 
             to="/wishlist"
-            className="p-2 btn btn-secondary mb-1 mx-1">
+            className="p-2 fw-bold btn btn-secondary mb-1 mx-1">
             Go To WishList
         </Link>       
     )
@@ -83,13 +83,13 @@ export function ButtonCart({product}) {
                 setIsInCart(true)
                 handleAddToCartProducts(product)
             }} 
-            className="p-2 btn btn-primary mb-1 mx-1">
+            className="p-2 fw-bold btn btn-primary mb-1 mx-1">
             Add To Cart
         </button>
         ) : (
             <Link 
                 to="/cart"
-                className="p-2 btn btn-primary mb-1 mx-1">
+                className="p-2 btn btn-primary mb-1 fw-bold mx-1">
                 Go To Cart
             </Link>
         );

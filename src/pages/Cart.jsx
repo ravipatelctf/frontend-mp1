@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import useProductContext from "../contexts/ProductContext";    
 import { ProductQuantity } from "../components/ProductQuantity";
 import { ProductSize } from "../components/ProductSize";
@@ -9,10 +10,9 @@ import { roundOffNum } from "../components/atomicFunctions";
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
-    const {placeOrderAddresses, setPlaceOrderAddresses, selectedAddress, setSelectedAddress, orderSummaryStatus, setOrderSummaryStatus, orderSummary, setOrderSummary, cartProducts, handleRemoveFromCartProducts, handleAddToWishlistProducts, btnState, setBtnState, productSize, productQuantity, productsData, loading, error, sizeValue, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
-    
+    const {setSelectedAddress, setPlaceOrderAddresses, selectedAddress, setOrderSummaryStatus, cartProducts, handleRemoveFromCartProducts, handleAddToWishlistProducts, productsData, loading, error, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
+    const [addToWishlistBtnStatus, setAddToWishlistBtnStatus] = useState(false);
     // -----------------------------------------------------------------------------------
-
     // fetch the user once when the component mounts
     useEffect(() => {
 
@@ -27,7 +27,7 @@ export default function Cart() {
         loadData();
     }, []);
 
-    if(cartProducts.length <= 0) {
+    if(cartProducts && cartProducts.length <= 0) {
         return (
             <div className="mt-4">
                 <h1 className="text-center">MY CART ({noOfUniqueProductsInCart})</h1>
@@ -45,7 +45,7 @@ export default function Cart() {
     }
 
     const totalPrice = productsData.reduce((total, curr) => {
-        total += curr.isAddedToCart === true ? curr.price * curr.quantity: 0;
+        total += curr && curr.isAddedToCart === true ? curr.price * curr.quantity: 0;
         return roundOffNum(total);
     }, 0)
 
@@ -55,7 +55,7 @@ export default function Cart() {
     }
 
     const totalDiscountedAmount = productsData.reduce((total, curr) => {
-        total += curr.isAddedToCart ? (curr.price * curr.quantity * curr.discountPercentage * 0.01) : 0;
+        total += curr && curr.isAddedToCart ? (curr.price * curr.quantity * curr.discountPercentage * 0.01) : 0;
         return roundOffNum(total);
     }, 0)
 
@@ -88,11 +88,21 @@ export default function Cart() {
                 "deliveryCharge": 499,
                 "address": selectedAddress,                
             };
-            console.log("newOrderObject:", newOrderObject)
-            await createNewOrder(newOrderObject)
-            toast.success("Order placed successfully.");
-            setOrderSummaryStatus(false)
+            const createdOrder = await createNewOrder(newOrderObject);
+            if (createdOrder) {
+                setOrderSummaryStatus(false)
+                toast.success("Order placed successfully.");
+            } else {
+                toast.error("Failed to place order!")
+            }
+            
+            
             setSelectedAddress("")
+            // ---------------------------------------------------------
+            cartProducts.forEach((curr) => {
+                handleRemoveFromCartProducts(curr);
+            });
+            // ---------------------------------------------------------
         } catch (error) {
             toast.error("Failed to place order!")
         }
@@ -151,17 +161,28 @@ export default function Cart() {
                                                 handleRemoveFromCartProducts(product)
                                                 
                                             }} 
-                                            className="w-100 btn btn-danger mb-1 fw-bold">
+                                            className="w-100 p-2 fw-bold btn btn-danger mb-1">
                                             Remove From Cart
                                         </button>
-                                        <button 
-                                            onClick={() => {
-                                                toast.success("Product moved to wishlist successfully.")
-                                                handleAddToWishlistProducts(product)
-                                            }}
-                                            className="w-100 btn btn-secondary fw-bold">
-                                            Move To Wishlist
-                                        </button>
+                                        {
+                                            !addToWishlistBtnStatus ? (
+                                                <button 
+                                                    onClick={() => {
+                                                        toast.success("Product added to wishlist successfully.")
+                                                        handleAddToWishlistProducts(product)
+                                                        setAddToWishlistBtnStatus(true)
+                                                    }}
+                                                    className="w-100 p-2 fw-bold btn btn-secondary mb-1">
+                                                    Add To Wishlist
+                                                </button>
+                                            ) : (
+                                                <Link 
+                                                    to="/wishlist"
+                                                    className="w-100 p-2 fw-bold btn btn-secondary mb-1">
+                                                    Go To Wishlist
+                                                </Link>  
+                                            )
+                                        }
                                     </div>
                                 </div>
 
@@ -200,9 +221,7 @@ export default function Cart() {
                                 className={`btn ${quanityOfProductsInCart <= 0 ? "btn-secondary fw-bold mt-2 w-100 py-2" : "btn-success fw-bold mt-2 w-100 py-2"}`}
                                 disabled={quanityOfProductsInCart <= 0}
                                 onClick={() => {
-                                    setOrderSummary(orderSummaryObj)
-                                    setOrderSummaryStatus(true);
-                                    
+                                    setOrderSummaryStatus(true); 
                                 }}  
                             >
                                 PLACE ORDER
@@ -216,7 +235,7 @@ export default function Cart() {
 }
 
 function OrderSummary({orderSummaryObj, handlePlaceOrder}) {
-        const {quanityOfProductsInCart, orderSummary, setOrderSummary, orderSummaryStatus, setOrderSummaryStatus, selectedAddress, setSelectedAddress, placeOrderAddresses, setPlaceOrderAddresses} = useProductContext();
+        const {quanityOfProductsInCart, orderSummaryStatus, setOrderSummaryStatus, selectedAddress, setSelectedAddress, placeOrderAddresses, setPlaceOrderAddresses} = useProductContext();
     return orderSummaryStatus && (
         <div className="modal show fade d-block bg-dark bg-opacity-75" tabIndex="-1" role="dialog">
             <div className="modal-dialog">
@@ -230,12 +249,12 @@ function OrderSummary({orderSummaryObj, handlePlaceOrder}) {
                         ></button>
                     </div>
                     <div className="modal-body">
-                        <p><strong>Number of Products Ordered: </strong>{orderSummary.quanityOfProductsInCart}</p>
-                        <p><strong>Total Price: </strong>&#8377;{roundOffNum(orderSummary.totalPrice)}</p>
-                        <p><strong>Discount : </strong>&#8377;{roundOffNum(orderSummary.totalDiscountedAmount)}</p>
+                        <p><strong>Number of Products Ordered: </strong>{orderSummaryObj.quanityOfProductsInCart}</p>
+                        <p><strong>Total Price: </strong>&#8377;{roundOffNum(orderSummaryObj.totalPrice)}</p>
+                        <p><strong>Discount : </strong>&#8377;{roundOffNum(orderSummaryObj.totalDiscountedAmount)}</p>
                         <p><strong>Delivery Charge: </strong>&#8377;499</p>
-                        <p><strong>Total Amount Paid: </strong>&#8377;{roundOffNum(orderSummary.totalAmountAfterDiscountPlusDeliveryCharges)}</p>
-                        <p><strong>Address: </strong>{orderSummary.selectedAddress ? orderSummary.selectedAddress : "No address selected!"}</p>
+                        <p><strong>Total Amount Paid: </strong>&#8377;{roundOffNum(orderSummaryObj.totalAmountAfterDiscountPlusDeliveryCharges)}</p>
+                        <p><strong>Address: </strong>{orderSummaryObj.selectedAddress ? orderSummaryObj.selectedAddress : "No address selected!"}</p>
                     </div>
                     <div className="modal-footer">
                         <select 
@@ -258,11 +277,8 @@ function OrderSummary({orderSummaryObj, handlePlaceOrder}) {
                             className={`btn ${quanityOfProductsInCart <= 0 ? "btn-secondary fw-bold mt-2 w-100 py-2" : "btn-success fw-bold mt-2 w-100 py-2"}`}
                             disabled={quanityOfProductsInCart <= 0}
                             onClick={() => {
-                                setOrderSummary(orderSummaryObj)
-                                setOrderSummaryStatus(true);
-                                
+                                // selectedAddress && setOrderSummaryStatus(false)
                                 handlePlaceOrder()
-                                
                             }}  
                         >
                             PLACE ORDER

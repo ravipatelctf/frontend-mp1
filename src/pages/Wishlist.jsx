@@ -1,36 +1,50 @@
 import useProductContext from "../contexts/ProductContext";
 import { toast } from "react-toastify";
-// import ProductCard from "../components/ProductCard";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function ProductCard({product}) {
     const {handleAddToCartProducts, handleRemoveFromWishlistProducts} = useProductContext();
-
+    const [addToCartBtnStatus, setAddToCartBtnStatus] = useState(false);
     return (
             <div key={product._id} className="col-md-3 my-3">       
                 <div className="card">
                         <img 
                             src={`${product.imageUrl}?&w=400&h=400&fit=crop`}
                             alt={product.imageAlt} 
-                            className="img-fluid"
+                            className="img-fluid rounded-top"
                         />
                         <div className="card-body text-center">
                             <h6>{product.name.slice(0, 28)}</h6>
                             <p className="fw-bold"> &#8377;{product.price}</p>
                         </div>
-                    <button 
-                        onClick={() => {
-                            toast.success("Product moved to cart successfully.")
-                            handleAddToCartProducts(product)    
-                        }} 
-                        className="p-2 bg-primary border text-light text-center text-decoration-none">
-                        Move To Cart
-                    </button>
+                    {
+                        !addToCartBtnStatus ? (
+                            <button 
+                                onClick={() => {
+                                    toast.success("Product added to cart successfully.")
+                                    handleAddToCartProducts(product)
+                                    setAddToCartBtnStatus(true)    
+                                }} 
+                                className="p-2 fw-bold btn btn-primary mb-1 mx-1">
+                                Add To Cart
+                            </button>
+                        ) : (
+                            <Link 
+                                to="/cart"
+                                className="p-2 fw-bold btn btn-primary mb-1 mx-1">
+                                Go To Cart
+                            </Link>  
+                        )
+                    }
+
+
                     <button 
                         onClick={() => {
                             toast.success("Product removed from wishlist successfully.")
                             handleRemoveFromWishlistProducts(product)     
                         }} 
-                        className="p-2 bg-secondary border text-light text-center text-decoration-none">
+                        className="p-2 fw-bold btn btn-danger mb-1 mx-1">
                         Remove from Wishlist
                     </button>                    
                 </div>           
