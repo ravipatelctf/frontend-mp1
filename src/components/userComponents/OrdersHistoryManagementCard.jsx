@@ -3,7 +3,6 @@ import { useState } from "react";
 import {toast} from "react-toastify";
 import { useUserContext } from "../../contexts/UserContext";
 import { roundOffNum } from "../atomicFunctions";
-import { Link } from "react-router-dom";
 
 export function OrdersHistoryManagementCard() {
     const {orders, orderedProducts} = useUserContext();
@@ -71,10 +70,10 @@ export function ProductCard({product, item}) {
 
 function CardContent({product, item}) {
     return (
-        <Link to={`/products/${product._id}`} className="text-decoration-none text-black">
+        <div className="text-decoration-none text-black">
             <CardImage product={product} />
             <CardBody product={product} item={item} />
-        </Link>
+        </div>
     );
 }
 
