@@ -70,6 +70,8 @@ export default function Cart() {
             if (!selectedAddress) {
                 toast.warn("Select an address to place order.")
                 return;
+            } else {
+                toast.info("Placing order...Please wait...")
             }
             
             const productsArray = cartProducts.map(item => {
@@ -89,6 +91,7 @@ export default function Cart() {
             console.log("newOrderObject:", newOrderObject)
             await createNewOrder(newOrderObject)
             toast.success("Order placed successfully.");
+            setOrderSummaryStatus(false)
             setSelectedAddress("")
         } catch (error) {
             toast.error("Failed to place order!")
@@ -257,7 +260,9 @@ function OrderSummary({orderSummaryObj, handlePlaceOrder}) {
                             onClick={() => {
                                 setOrderSummary(orderSummaryObj)
                                 setOrderSummaryStatus(true);
+                                
                                 handlePlaceOrder()
+                                
                             }}  
                         >
                             PLACE ORDER
