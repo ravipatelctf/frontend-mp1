@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getData, updateData } from "../data";
+import { toast } from "react-toastify";
 
 const ProductContext = createContext();
 const useProductContext = () => useContext(ProductContext);
@@ -27,10 +28,40 @@ export function ProductProvider({children}) {
 
     const [btnState, setBtnState] = useState(null);
     // ----------------------------------------------------------------------
+    
+    // ----------------------------------------------------------------------
     const [selectedCategories, setSelectedCategories] = useState([]);
     // ----------------------------------------------------------------------
     const [orderSummary, setOrderSummary] = useState({});
     const [orderSummaryStatus, setOrderSummaryStatus] = useState(false);
+
+
+
+    // ----------------------------------------------------------------------
+    const [currentSize, setCurrentSize] = useState({});
+    function handleSizeChange(product, size) {
+        setCurrentSize((preValues) => {
+            return {
+                ...preValues,
+                [product._id] : size
+            }
+        })                         
+        toast.info(`Size set ${size}`)
+        // --------------------------------------------
+        const updatedProduct = (preValues) => {
+            return preValues.map((curr) => {
+                if (curr._id != product._id) {
+                    return curr;
+                }
+                return {
+                    ...curr,
+                    size: size
+                }
+            })
+        }
+        setProductsData((preValues) => updatedProduct(preValues))
+        // --------------------------------------------
+    }
     // ----------------------------------------------------------------------
 
     useEffect(() => {
@@ -46,12 +77,29 @@ export function ProductProvider({children}) {
             }
         }
         fetchProducts();
-    }, []);
 
+    }, []);
+    
 // -------------------------------------------------------------------------------------------------
     useEffect(() => {
         setCartProducts(() => [...productsData.filter(e => e.isAddedToCart)])
-        setIsInWishlist(() => [...productsData.filter(product => product.isAddedToWishlist)])
+
+        const dataInWishlist = productsData.filter(product => product.isAddedToWishlist);
+        
+        setIsInWishlist(() => [...dataInWishlist])
+        // ------------------------------------------
+        if (productsData && productsData.length > 0) {        
+            setCurrentSize((preValues) => {
+                const newSizes = {...preValues};
+                productsData.forEach((product) => {
+                    if (!newSizes[product._id]) {
+                        newSizes[product._id] = "S";
+                    }
+                });
+                return newSizes;
+            }) 
+        }
+        // ------------------------------------------
         console.log(("productsData:", productsData))
     }, [productsData])
 
@@ -179,6 +227,11 @@ export function ProductProvider({children}) {
         return acc;
     }, 0);
 
+// ---------------------------------------------------------------------------------------------------
+
+    // localStorage.setItem
+
+// ---------------------------------------------------------------------------------------------------
     return (
         <ProductContext.Provider value={{
             btnState,
@@ -194,8 +247,10 @@ export function ProductProvider({children}) {
             productsData, 
             setProductsData, 
             sizeValue, 
-            setSizeValue, 
-             
+            setSizeValue,
+            currentSize, 
+            setCurrentSize,
+            handleSizeChange,
             noOfUniqueProductsInCart, 
             quanityOfProductsInCart, 
             

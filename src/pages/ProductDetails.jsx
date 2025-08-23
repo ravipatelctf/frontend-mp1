@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import useProductContext from "../contexts/ProductContext";
@@ -55,7 +55,7 @@ function ButtonCart({product}) {
 
 export default function ProductDetails() {
     const {productId} = useParams();
-    const {loading, error, productsData, handleAddRemoveProductInWishlist, handleAddRemoveProductInCart } = useProductContext();
+    const {loading, error, productsData, currentSize, setCurrentSize} = useProductContext();
 
     if (loading) {
         return <p className="text-center">Loading...</p>
