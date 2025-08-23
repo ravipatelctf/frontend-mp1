@@ -1,11 +1,9 @@
 
-import { useEffect, useState } from "react";
 import useProductContext from "../contexts/ProductContext";
-import { toast } from "react-toastify";
 
 export function ProductSize({product}) {
     
-    const {productsData, setProductsData, currentSize, setCurrentSize, handleSizeChange} = useProductContext();
+    const {handleSizeChange} = useProductContext();
     
     return (
         <div className="d-flex align-items-center gap-2 justify-content-start">
@@ -17,7 +15,7 @@ export function ProductSize({product}) {
                             key={size} 
                             type="button" 
                             name={size}
-                            className={`ms-1 btn btn-outline-primary btn-sm text-secondary fw-bold ${currentSize[product._id] === size ? "active text-white" : "text-secondary"} `} 
+                            className={`ms-1 btn btn-outline-primary btn-sm text-secondary fw-bold ${ product.size === size ? "active text-white" : "text-secondary"} `} 
                             onClick={() => {
                                 handleSizeChange(product, size)
                             }}>

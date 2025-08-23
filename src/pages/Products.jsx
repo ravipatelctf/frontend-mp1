@@ -1,21 +1,21 @@
 
 import useProductContext from "../contexts/ProductContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { toast } from "react-toastify";
 
 export default function Products() {
 
-    const {cartProducts, loading, error, productsData, searchedProducts, selectedCategories, setSelectedCategories, handleCategory} = useProductContext();
+    const {loading, error, productsData, searchedProducts, selectedCategories, setSelectedCategories, handleCategory} = useProductContext();
     const [productRating, setProductRating] = useState(null);
     const [sortBy, setSortBy] = useState(null);
 
 
-    if (loading) {
+    if (loading === true) {
         return <p className="text-center">Loading...</p>
     }
 
-    if (error) {
+    if (error === true) {
         return <p className="text-center">Error occurred...</p>
     }
 

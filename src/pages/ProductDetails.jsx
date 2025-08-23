@@ -1,12 +1,11 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import useProductContext from "../contexts/ProductContext";
 import {ProductQuantity} from "../components/ProductQuantity";
 import {ProductSize} from "../components/ProductSize";
 import { toast } from "react-toastify";
-// import {ButtonCart, ButtonWishlist} from "../components/ProductCard";
 
 function ButtonWishlist({product}) {
     const {handleAddToWishlistProducts} = useProductContext();
@@ -55,17 +54,19 @@ function ButtonCart({product}) {
 
 export default function ProductDetails() {
     const {productId} = useParams();
-    const {loading, error, productsData, currentSize, setCurrentSize} = useProductContext();
+    const {loading, error, productsData} = useProductContext();
+    console.log("loading:", loading);
 
     if (loading) {
         return <p className="text-center">Loading...</p>
     }
-
+    console.log("error:", error);
     if (error) {
         return <p className="text-center">Error occurred...</p>
     }
     
-    const targetProduct = productsData.find(product => product._id === productId);
+    const targetProduct = productsData.find((product) => product._id === productId);
+    console.log("targetProduct:", targetProduct);
     const discountedPrice = Number(((targetProduct.price)- (targetProduct.price * targetProduct.discountPercentage * 0.01)).toFixed(2));
 
     return (

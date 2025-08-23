@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getData, updateData } from "../data";
+import { getData } from "../data";
 import { toast } from "react-toastify";
 
 
@@ -21,11 +21,7 @@ export function ProductProvider({children}) {
     // ---------------------------------------------------------------------
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-
     // ----------------------------------------------------------------------
-    const [productSize, setProductSize] = useState(null);
-    const [productQuantity, setProductQuantity] = useState(null);
-
     const [btnState, setBtnState] = useState(null);
     // ----------------------------------------------------------------------
     const [selectedAddress, setSelectedAddress] = useState("");
@@ -35,75 +31,52 @@ export function ProductProvider({children}) {
     // ----------------------------------------------------------------------
     const [orderSummary, setOrderSummary] = useState({});
     const [orderSummaryStatus, setOrderSummaryStatus] = useState(false);
-
-
-
+    
     // ----------------------------------------------------------------------
-    const [currentSize, setCurrentSize] = useState({});
-    function handleSizeChange(product, size) {
-        setCurrentSize((preValues) => {
-            return {
-                ...preValues,
-                [product._id] : size
-            }
-        })                         
-        toast.info(`Size set ${size}`)
-        // --------------------------------------------
-        const updatedProduct = (preValues) => {
-            return preValues.map((curr) => {
-                if (curr._id != product._id) {
-                    return curr;
-                }
-                return {
-                    ...curr,
-                    size: size
-                }
-            })
-        }
-        setProductsData((preValues) => updatedProduct(preValues))
-        // --------------------------------------------
-    }
+    const storedData = JSON.parse(localStorage.getItem("dataOfProducts"));
     // ----------------------------------------------------------------------
-
     useEffect(() => {
-        async function fetchProducts() {
-            try {
-                const data = await getData();
-                setProductsData(data);
-            } catch (error) {
-                setLoading(false);
-                setError(true)
-            } finally {
-                setLoading(false);
+        try {
+            async function fetchProducts() {
+                try {
+                    const data = await getData();
+                    if (data) {
+                        setLoading(false)
+                        setProductsData(data);
+                    }
+                    
+                } catch (error) {
+                    setLoading(false);
+                    setError(true)
+                } finally {
+                    setLoading(false);
+                }
             }
-        }
-        fetchProducts();
+            
+            if (storedData && storedData.length > 0) {
+                setLoading(false)
+                setProductsData(storedData);
+            } else {
+                fetchProducts();
+                localStorage.setItem("dataOfProducts", JSON.stringify(productsData))
+            }
 
+        } catch (error) {
+            setLoading(false)
+            setError(true)
+        }
+        console.log("storedData:", storedData)
+        console.log("productsData:", productsData)
     }, []);
     
-// -------------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------------
     useEffect(() => {
         setCartProducts(() => [...productsData.filter(e => e.isAddedToCart)])
+        setIsInWishlist(() => [...productsData.filter(product => product.isAddedToWishlist)])
 
-        const dataInWishlist = productsData.filter(product => product.isAddedToWishlist);
-        
-        setIsInWishlist(() => [...dataInWishlist])
-        // ------------------------------------------
-        if (productsData && productsData.length > 0) {        
-            setCurrentSize((preValues) => {
-                const newSizes = {...preValues};
-                productsData.forEach((product) => {
-                    if (!newSizes[product._id]) {
-                        newSizes[product._id] = "S";
-                    }
-                });
-                return newSizes;
-            }) 
-        }
-        // ------------------------------------------
-        console.log(("productsData:", productsData))
+        localStorage.setItem("dataOfProducts", JSON.stringify(productsData));
     }, [productsData])
-
+    // -------------------------------------------------------------------------------------------------
 
     function handleDetailsPageAddToCartProducts(product) {
         
@@ -201,7 +174,26 @@ export function ProductProvider({children}) {
         setProductsData((preValues) => newProducts(preValues));
     }
 
-// ---------------------------------------------------------------------------------------------------
+    function handleSizeChange(product, size) {
+                            
+        toast.info(`Size set ${size}`)
+        // --------------------------------------------
+        const updatedProduct = (preValues) => {
+            return preValues.map((curr) => {
+                if (curr._id != product._id) {
+                    return curr;
+                }
+                return {
+                    ...curr,
+                    size: size
+                }
+            })
+        }
+        setProductsData((preValues) => updatedProduct(preValues))
+        // --------------------------------------------
+    }
+
+    // ---------------------------------------------------------------------------------------------------
 
     function handleCategory(event) {
         const {checked, value} = event.target;
@@ -216,42 +208,33 @@ export function ProductProvider({children}) {
     function handleSearch(event) {
         setSearchedProducts(productsData.filter(product => product.name.toLowerCase().includes(event.target.value)));
     }
-
+    // -------------------------------------------------------------------------------------------------
 
     const noOfUniqueProductsInCart = cartProducts.length;
     const noOfProductsInWishlist = wishlistProducts.length;
 
-    const quanityOfProductsInCart = cartProducts.reduce((acc, curr) => {
+    const quantityOfProductsInCart = cartProducts.reduce((acc, curr) => {
         if (curr.isAddedToCart) {
             acc += curr.quantity;
         }
         return acc;
     }, 0);
 
-// ---------------------------------------------------------------------------------------------------
-
-    // localStorage.setItem
-
-// ---------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------
     return (
         <ProductContext.Provider value={{
             btnState,
             setBtnState, 
             address, 
             setAddresses, 
-            productSize, 
-            setProductSize, 
-            productQuantity, 
-            setProductQuantity, 
             loading, 
             error, 
             productsData, 
             setProductsData, 
-            currentSize, 
-            setCurrentSize,
+
             handleSizeChange,
             noOfUniqueProductsInCart, 
-            quanityOfProductsInCart, 
+            quantityOfProductsInCart, 
             
             noOfProductsInWishlist, 
             searchedProducts, 
@@ -276,7 +259,7 @@ export function ProductProvider({children}) {
             selectedAddress, 
             setSelectedAddress,
             placeOrderAddresses, 
-            setPlaceOrderAddresses
+            setPlaceOrderAddresses,
         }}>
             {children}
         </ProductContext.Provider>

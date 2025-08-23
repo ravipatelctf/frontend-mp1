@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import useProductContext from "../contexts/ProductContext";
 
