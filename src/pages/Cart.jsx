@@ -234,6 +234,7 @@ export default function Cart() {
     );
 }
 
+
 function OrderSummary({orderSummaryObj, handlePlaceOrder}) {
         const {quanityOfProductsInCart, orderSummaryStatus, setOrderSummaryStatus, selectedAddress, setSelectedAddress, placeOrderAddresses, setPlaceOrderAddresses} = useProductContext();
     return orderSummaryStatus && (
@@ -287,5 +288,5 @@ function OrderSummary({orderSummaryObj, handlePlaceOrder}) {
                 </div>
             </div>
         </div>
-        )
+    )
 }
