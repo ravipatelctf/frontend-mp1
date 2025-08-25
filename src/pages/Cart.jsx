@@ -10,7 +10,7 @@ import { roundOffNum } from "../components/atomicFunctions";
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 export default function Cart() {
-    const {setSelectedAddress, setPlaceOrderAddresses, selectedAddress, setOrderSummaryStatus, cartProducts, handleRemoveFromCartProducts, handleAddToWishlistProducts, productsData, loading, error, noOfUniqueProductsInCart, quanityOfProductsInCart, searchedProducts} = useProductContext();
+    const {setSelectedAddress, setPlaceOrderAddresses, selectedAddress, setOrderSummaryStatus, cartProducts, handleRemoveFromCartProducts, handleAddToWishlistProducts, productsData, loading, error, noOfUniqueProductsInCart, quantityOfProductsInCart, searchedProducts} = useProductContext();
     const [addToWishlistBtnStatus, setAddToWishlistBtnStatus] = useState(false);
     // -----------------------------------------------------------------------------------
     // fetch the user once when the component mounts
@@ -109,7 +109,7 @@ export default function Cart() {
     }   
     // -------------------------------------------------------------------------------------
     const orderSummaryObj = {
-        quanityOfProductsInCart,
+        quantityOfProductsInCart,
         totalPrice,
         totalDiscountedAmount,
         totalAmountAfterDiscountPlusDeliveryCharges,
@@ -195,7 +195,7 @@ export default function Cart() {
                         <h6 className="fw-bold">PRICE DETAILS</h6>
                         <hr />
                         <p className="d-flex justify-content-between">
-                            <span>Price ( {quanityOfProductsInCart} {quanityOfProductsInCart > 1 ? "items" : "item"} )</span>
+                            <span>Price ( {quantityOfProductsInCart} {quantityOfProductsInCart > 1 ? "items" : "item"} )</span>
                             <span>+ &#8377;{totalPrice}</span>
                         </p>
                         <p className="d-flex justify-content-between">
@@ -218,8 +218,8 @@ export default function Cart() {
                         <div>
                             <button
                                 type="button"
-                                className={`btn ${quanityOfProductsInCart <= 0 ? "btn-secondary fw-bold mt-2 w-100 py-2" : "btn-success fw-bold mt-2 w-100 py-2"}`}
-                                disabled={quanityOfProductsInCart <= 0}
+                                className={`btn ${quantityOfProductsInCart <= 0 ? "btn-secondary fw-bold mt-2 w-100 py-2" : "btn-success fw-bold mt-2 w-100 py-2"}`}
+                                disabled={quantityOfProductsInCart <= 0}
                                 onClick={() => {
                                     setOrderSummaryStatus(true); 
                                 }}  
@@ -236,7 +236,7 @@ export default function Cart() {
 
 
 function OrderSummary({orderSummaryObj, handlePlaceOrder}) {
-        const {quanityOfProductsInCart, orderSummaryStatus, setOrderSummaryStatus, selectedAddress, setSelectedAddress, placeOrderAddresses, setPlaceOrderAddresses} = useProductContext();
+        const {quantityOfProductsInCart, orderSummaryStatus, setOrderSummaryStatus, selectedAddress, setSelectedAddress, placeOrderAddresses, setPlaceOrderAddresses} = useProductContext();
     return orderSummaryStatus && (
         <div className="modal show fade d-block bg-dark bg-opacity-75" tabIndex="-1" role="dialog">
             <div className="modal-dialog">
@@ -250,7 +250,7 @@ function OrderSummary({orderSummaryObj, handlePlaceOrder}) {
                         ></button>
                     </div>
                     <div className="modal-body">
-                        <p><strong>Number of Products Ordered: </strong>{orderSummaryObj.quanityOfProductsInCart}</p>
+                        <p><strong>Number of Products Ordered: </strong>{orderSummaryObj.quantityOfProductsInCart}</p>
                         <p><strong>Total Price: </strong>&#8377;{roundOffNum(orderSummaryObj.totalPrice)}</p>
                         <p><strong>Discount : </strong>&#8377;{roundOffNum(orderSummaryObj.totalDiscountedAmount)}</p>
                         <p><strong>Delivery Charge: </strong>&#8377;499</p>
@@ -275,8 +275,8 @@ function OrderSummary({orderSummaryObj, handlePlaceOrder}) {
 
                         <button
                             type="button"
-                            className={`btn ${quanityOfProductsInCart <= 0 ? "btn-secondary fw-bold mt-2 w-100 py-2" : "btn-success fw-bold mt-2 w-100 py-2"}`}
-                            disabled={quanityOfProductsInCart <= 0}
+                            className={`btn ${quantityOfProductsInCart <= 0 ? "btn-secondary fw-bold mt-2 w-100 py-2" : "btn-success fw-bold mt-2 w-100 py-2"}`}
+                            disabled={quantityOfProductsInCart <= 0}
                             onClick={() => {
                                 // selectedAddress && setOrderSummaryStatus(false)
                                 handlePlaceOrder()
