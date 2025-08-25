@@ -29,7 +29,7 @@ export function AddressInputEditAndUpdate({element}) {
 
     async function handleAddressUpdate(addressId) {
         try {
-            toast.info("Updating Address...")
+            // toast.info("Updating Address...")
             const updatedAddress = { address: addressInputs[addressId] };
             const updatedData = await updateAnAddress(addressId, updatedAddress);
             if (updatedData) {
