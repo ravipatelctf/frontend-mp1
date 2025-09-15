@@ -3,7 +3,7 @@ An e-commerce website where users can browse products, manage their cart, add/up
 
 ## Demo Link
 Watch a walkthrough (5 minutes) of all major features of this app:
-[Video Link](https://drive.google.com/drive/folders/1bXfdFuiQuG2VnTvE9CPctbqODyjZtsDb?usp=drive_link)
+[Video Link](https://drive.google.com/drive/folders/1GIZnTn8-R-vEzJXymw87PWeUGWYUENw7?usp=drive_link)
 
 ## Quick Start
 
